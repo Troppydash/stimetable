@@ -1,11 +1,193 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f57e6297-dbb5-479f-8bdb-46ba43981d32" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/map-renderer/examples/test/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/examples/test/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/examples/test/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/examples/test/public/favicon.ico" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/examples/test/public/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/examples/test/public/logo192.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/examples/test/public/logo512.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/examples/test/public/manifest.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/examples/test/public/robots.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/examples/test/public/scots-notex.gltf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/examples/test/src/App.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/examples/test/src/App.test.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/examples/test/src/App.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/examples/test/src/index.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/examples/test/src/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/examples/test/src/logo.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/examples/test/src/react-app-env.d.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/examples/test/src/serviceWorker.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/examples/test/src/setupTests.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/examples/test/tsconfig.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/examples/test/yarn.lock" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/package-lock.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/src/renderer/mapRenderer.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererSettingsTypes.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/src/renderer/typesHelpers.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/tsconfig.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/map-renderer/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/map-renderer/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/map-renderer/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/index.ts" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+        <option value="JavaScript File" />
+        <option value="TypeScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1icATIldhnF6kgH9SwZ1JbFgqZx" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="E:/Folder2020/NextProjects/TroppyChat/server" />
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="dart.analysis.tool.window.visible" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/map-renderer/examples/test/public" />
     <property name="nodejs_interpreter_path" value="D:/SoftwareDevelopmentKits/Node/Node12-16-3/node" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="settings.nodejs" />
+    <property name="ts.external.directory.path" value="E:\Folder2020\Projects\NpmProjects\stimetable\map-renderer\node_modules\typescript\lib" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\Folder2020\Projects\NpmProjects\stimetable\map-renderer\examples\test\public" />
+      <recent name="E:\Folder2020\Projects\NpmProjects\stimetable" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\Folder2020\Projects\NpmProjects\stimetable\map-renderer\example" />
+      <recent name="E:\Folder2020\Projects\NpmProjects\stimetable\map-renderer\src\renderer" />
+    </key>
+  </component>
+  <component name="RunManager" selected="npm.build">
+    <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/map-renderer/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="build" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="start" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/map-renderer/examples/test/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="start" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.build" />
+        <item itemvalue="npm.start" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f57e6297-dbb5-479f-8bdb-46ba43981d32" name="Default Changelist" comment="" />
+      <created>1602196512351</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1602196512351</updated>
+      <workItem from="1602196513513" duration="4525000" />
+      <workItem from="1602201202961" duration="5215000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="829" y="418" width="569" height="286" key="Github.ShareDialog" timestamp="1602196598678">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="829" y="418" width="569" height="286" key="Github.ShareDialog/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602196598678" />
+    <state x="745" y="221" key="Github.UntrackedFilesDialog" timestamp="1602196610537">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="745" y="221" key="Github.UntrackedFilesDialog/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602196610537" />
+    <state width="1901" height="282" key="GridCell.Tab.0.bottom" timestamp="1602206522312">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1901" height="282" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602206522312" />
+    <state width="1901" height="282" key="GridCell.Tab.0.center" timestamp="1602206522312">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1901" height="282" key="GridCell.Tab.0.center/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602206522312" />
+    <state width="1901" height="282" key="GridCell.Tab.0.left" timestamp="1602206522312">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1901" height="282" key="GridCell.Tab.0.left/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602206522312" />
+    <state width="1901" height="282" key="GridCell.Tab.0.right" timestamp="1602206522312">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1901" height="282" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602206522312" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1602204887773">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602204887773" />
   </component>
 </project>
