@@ -1,9 +1,10 @@
-import moment from "moment";
-import { RecursivePartial } from "./typesHelpers";
+import dayjs from "dayjs";
+import { CanvasSize, RecursivePartial } from "./typesHelpers";
 
-/// hex color type
+// hex color type
 type HexColor = string;
-/// time of day enum
+
+// time of day enum
 export enum TimeOfDay {
     morning = "morning",
     afternoon = "afternoon",
@@ -11,51 +12,62 @@ export enum TimeOfDay {
     night = "night",
 }
 
-/// basic settings
+// Basic settings
 export interface BasicSettings {
     quality: number,
     targetElement: HTMLElement,
     gltfLocation: string,
-    createSettingsFromQuality?: (quality: number) => RecursivePartial<MapRendererSettings>,
+    createSettingsFromQuality?: ( quality: number ) => RecursivePartial<AdvanceSettings>,
 }
 
-/// advance settings
-export interface MapRendererSettings {
+// Advance settings
+export interface AdvanceSettings {
     quality: QualitySettings,
     camera: CameraSettings,
     canvas: CanvasSettings,
-    mapSettings: MapSettings,
+    map: MapSettings,
+    performance: PerformanceSettings,
+    features: FeaturesSettings,
 }
 
-/// quality
+// Misc settings
+interface FeaturesSettings {
+
+}
+
+// Quality settings
 interface QualitySettings {
     shadow: boolean,
+    antialias: boolean,
     postprocessing: boolean,
 }
 
-/// camera
+// Camera settings
 interface CameraSettings {
     smooth: boolean,
     autoRotate: boolean,
     autoRotateDelay: number,
 }
 
-/// canvas
+// Canvas settings
 interface CanvasSettings {
-    width: number,
-    height: number,
+    size: CanvasSize,
     fixed: boolean,
 }
 
-/// map color
-interface MapSettings {
-    timeDepended: boolean,
-    colors: {[key in keyof typeof TimeOfDay]: ColorPalette},
-    getTimeOfDay: () => TimeOfDay,
+// Performance settings
+interface PerformanceSettings {
+    powerPreference: 'low-power' | 'default' | 'high-performance',
 }
 
-/// color palette
-interface ColorPalette {
+// Map settings
+interface MapSettings {
+    timeDependedColors: { [key in keyof typeof TimeOfDay]: ColorPalette },
+    timeDependedGetTimeOfDay: () => TimeOfDay,
+}
+
+// Color palette
+export interface ColorPalette {
     sunlight: string;
     ambient: string;
     skylight: string;
@@ -120,8 +132,9 @@ const defaultColors = {
     },
 }
 
+// Default GetTimeOfDay function
 function defaultGetTimeOfDay(): TimeOfDay {
-    const h = moment().hour();
+    const h = dayjs().hour();
     if ( h >= 5 && h < 11 ) {
         return TimeOfDay.morning;
     }
@@ -134,11 +147,13 @@ function defaultGetTimeOfDay(): TimeOfDay {
     return TimeOfDay.night;
 }
 
-export function CreateDefaultMapRendererSettingsFromQuality(quality: number): MapRendererSettings {
+// Default advance settings from quality function
+export function CreateDefaultMapRendererSettingsFromQuality( quality: number ): AdvanceSettings {
     return {
         quality: {
-            postprocessing: quality > 5,
+            postprocessing: quality > 6,
             shadow: quality > 3,
+            antialias: quality > 3,
         },
         camera: {
             autoRotate: false,
@@ -146,27 +161,37 @@ export function CreateDefaultMapRendererSettingsFromQuality(quality: number): Ma
             smooth: true,
         },
         canvas: {
-            height: 1024,
-            width: 768,
+            size: {
+                height: 1024,
+                width: 768,
+            },
             fixed: false
         },
-        mapSettings: {
-            timeDepended: true,
-            colors: defaultColors,
-            getTimeOfDay: defaultGetTimeOfDay
-        }
+        map: {
+            timeDependedColors: defaultColors,
+            timeDependedGetTimeOfDay: defaultGetTimeOfDay
+        },
+        performance: {
+            powerPreference: 'default'
+        },
+        features: {}
     }
 }
 
-export function MergeMapRendererSettings(s1: MapRendererSettings, s2: RecursivePartial<MapRendererSettings>): MapRendererSettings {
+// Merge two advance settings object together with s2 overriding s1
+export function MergeMapRendererSettings( s1: AdvanceSettings, s2: RecursivePartial<AdvanceSettings> ): AdvanceSettings {
     return {
-        canvas: { ...s1.canvas, ...s2.canvas },
-        mapSettings: {
-            timeDepended: s2.mapSettings?.timeDepended || s1.mapSettings.timeDepended,
-            getTimeOfDay: s2.mapSettings?.getTimeOfDay ? s2.mapSettings?.getTimeOfDay as () => TimeOfDay: s1.mapSettings.getTimeOfDay,
-            colors: s2.mapSettings?.colors ? s2.mapSettings?.colors as {[key in keyof typeof TimeOfDay]: ColorPalette}: s1.mapSettings.colors,
+        canvas: {
+            fixed: s2.canvas?.fixed || s1.canvas?.fixed,
+            size: { ...s1.canvas.size, ...s2.canvas?.size }
+        },
+        map: {
+            timeDependedGetTimeOfDay: s2.map?.timeDependedGetTimeOfDay ? s2.map?.timeDependedGetTimeOfDay as () => TimeOfDay : s1.map.timeDependedGetTimeOfDay,
+            timeDependedColors: s2.map?.timeDependedColors ? s2.map?.timeDependedColors as { [key in keyof typeof TimeOfDay]: ColorPalette } : s1.map.timeDependedColors,
         },
         camera: { ...s1.camera, ...s2.camera },
         quality: { ...s1.quality, ...s2.quality },
+        performance: { ...s1.performance, ...s2.performance },
+        features: { ...s1.features, ...s2.features }
     }
 }

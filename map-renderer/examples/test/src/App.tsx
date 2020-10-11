@@ -1,31 +1,53 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as MapRenderer from "@stimetable/map-renderer";
+import { MapRendererBuilder } from "@stimetable/map-renderer";
 
 
 function App() {
 
-    useEffect(() => {
-        const test = new MapRenderer.MapRenderer( {
-            quality: 6,
-            targetElement: document.getElementById("map")!,
-            gltfLocation: "scots-notex.gltf"
+    const [ builder, setBuilder ] = useState<MapRendererBuilder | undefined>( undefined );
+
+    useEffect( () => {
+
+       const builder = new MapRenderer.MapRendererBuilder( {
+            quality: 5,
+            targetElement: document.getElementById( "map" )!,
+            gltfLocation: process.env.PUBLIC_URL + "scots-notex.gltf"
         }, {
             canvas: {
-                height: 14,
-                width: 1920,
+                size: {
+                    height: 1024 / 16 * 9,
+                    width: 1024,
+                },
                 fixed: true,
+            },
+            map: {
+                timeDependedGetTimeOfDay: function () {
+                    return MapRenderer.TimeOfDay.morning;
+                }
             }
-        } );
+        } ) ;
+
+        setBuilder(builder);
+
+        builder?.register();
+
 
         return () => {
-            console.log("Cleanup");
+            builder?.dispose();
         }
-    });
+    }, [] );
+
 
     return (
         <div>
             <p>Text</p>
-            <canvas id="map"></canvas>
+            <button onClick={(ev) => {
+                builder?.ref?.toggleFullscreen();
+            }}>Full</button>
+            <div>
+                <div id="map"></div>
+            </div>
         </div>
     );
 }
