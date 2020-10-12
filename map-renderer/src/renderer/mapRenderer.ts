@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import * as similarity from 'string-similarity';
 
 import {
     BasicSettings,
@@ -12,13 +13,15 @@ import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { Material, Mesh, MeshBasicMaterial, MeshStandardMaterial } from "three";
+import { Material, Mesh, MeshBasicMaterial, MeshStandardMaterial, Object3D, Quaternion, Vector3 } from "three";
 import { ResourceTracker } from "./helpers/resourceTracker";
 import { FullscreenHandler } from "./helpers/fullscreenHandler";
-
-export * from './mapRendererSettingsTypes';
+import TWEEN from "@tweenjs/tween.js";
+import { CreatePositionTween, CreateRotationTween } from "./helpers/tweenHelper";
 
 export class MapRenderer {
+
+    /// BASIC FIELDS ///
 
     // mapRenderer settings object containing basic and advance settings
     private readonly settings: {
@@ -45,6 +48,10 @@ export class MapRenderer {
         current: CanvasSize,
     };
 
+    /// END->BASIC FIELDS ///
+
+    /// THREEJS FIELDS ///
+
     // list of models add during the loadMap function
     private models: THREE.Object3D[] = [];
 
@@ -59,6 +66,18 @@ export class MapRenderer {
     // resource tracker to keep track of the materials and geometries
     private resourceTracker = new ResourceTracker();
 
+    /// END->THREEJS FIELDS ///
+
+    /// SELECTION FIELDS ///
+    // the selected item's name
+    private selectedItemName: string = '';
+    // is animation playing
+    private isAnimating: boolean = false;
+    private tweenID: number = -1;
+
+    /// END->SELECTION FIELDS ///
+
+    // FULLSCREEN HANDLER FIELDS //
     // is the canvas fullscreen
     public get isFullscreen() {
         return this.fullscreenHandler.isFullscreen;
@@ -67,7 +86,10 @@ export class MapRenderer {
     // handler for handling fullscreen
     private fullscreenHandler: FullscreenHandler;
 
-    // constructor with settings as parameters
+    /// END->FULLSCREEN HANDLER FIELDS ///
+
+
+    // constructor that sets up the mapRenderer
     constructor( basic: BasicSettings, advance: AdvanceSettings ) {
         this.settings = {
             basic,
@@ -252,7 +274,6 @@ export class MapRenderer {
             } );
     }
 
-
     // dispose the mapRenderer and removes its content
     public dispose() {
         this.disposed = true;
@@ -325,6 +346,7 @@ export class MapRenderer {
                             building.castShadow = true;
                             building.receiveShadow = true;
                         }
+                        buildingMaterial.flatShading = true;
                         // TODO: Add on click
                     } else {
                         // if is ground
@@ -370,11 +392,21 @@ export class MapRenderer {
             return;
         }
 
+        // have to ignore this
+        // @ts-ignore
+        TWEEN.update();
+
         const { renderer, scene, camera, composer, controls } = this.refs;
-        requestAnimationFrame( this.animate );
-        renderer.render( scene, camera );
+        this.tweenID = requestAnimationFrame( this.animate );
+        // renderer.render( scene, camera );
+        this.render();
         composer?.render();
         controls.update();
+    }
+
+    private render = () => {
+        const { renderer, scene, camera, composer, controls } = this.refs;
+        renderer.render( scene, camera );
     }
 
     // track an object for disposal later, acts as a proxy for this.resourceTracker
@@ -384,5 +416,111 @@ export class MapRenderer {
 
     // OTHERS //
 
+    // focus an object with name, returns is successful
+    public async focusObject( name: string ): Promise<boolean> {
+        if ( this.isAnimating || name.length === 0 ) {
+            return false;
+        }
+
+        this.isAnimating = true;
+
+        const mostLikelyItem = this.findModelFromName( name );
+
+        if ( this.selectedItemName === mostLikelyItem.name ) {
+            this.isAnimating = false;
+            return true;
+        }
+        this.selectedItemName = mostLikelyItem.name;
+
+        if ( this.settings.advance.quality.postprocessing ) {
+            this.refs.outlinePass!.selectedObjects = [ mostLikelyItem ];
+        } else {
+            ((mostLikelyItem as Mesh).material as MeshStandardMaterial).color.set( this.colors.colorPalette.buildings.selected );
+        }
+
+        /// ANIMATIONS ///
+
+        const { camera, controls } = this.refs;
+
+        // find positions and rotations
+        const fromPos = camera.position.clone();
+        const toPos = mostLikelyItem.position.clone();
+        const toPosOffset = {
+            x: fromPos.x - toPos.x > 0 ? toPos.x + 30 : toPos.x - 30,
+            y: toPos.y + 45,
+            z: fromPos.z - toPos.z > 0 ? toPos.z + 30 : toPos.z - 30
+        };
+
+        const fromRot = camera.quaternion.clone();
+        const oldRot = fromRot.clone();
+        const oldPos = fromPos.clone();
+        camera.position.set( toPosOffset.x, toPosOffset.y, toPosOffset.z );
+        camera.lookAt( new THREE.Vector3( toPos.x, toPos.y, toPos.z ) );
+
+        const toRot = camera.quaternion.clone();
+        camera.position.set( oldPos.x, oldPos.y, oldPos.z );
+        camera.rotation.set( oldRot.x, oldRot.y, oldRot.z );
+
+
+        if ( this.settings.advance.camera.smooth ) {
+            // tween if allows
+            const rotTween = CreateRotationTween( ( t ) => {
+                Quaternion.slerp( fromRot, toRot, camera.quaternion, t );
+            }, () => {
+                camera.quaternion.copy( toRot );
+            } );
+            const posTween = CreatePositionTween( fromPos, toPosOffset as Vector3, ( from ) => {
+                camera.position.set( from.x, from.y, from.z );
+            }, () => {
+                camera.position.set( toPosOffset.x, toPosOffset.y, toPosOffset.z );
+                controls.target = new THREE.Vector3( toPos.x, toPos.y, toPos.z );
+            } );
+            await Promise.all( [ posTween, rotTween ] )
+            this.isAnimating = false;
+            return true;
+        } else {
+            // snaps if not allowed
+            controls.target = toPos;
+            camera.position.set( toPosOffset.x, toPosOffset.y, toPosOffset.z );
+            this.isAnimating = false;
+            return true;
+        }
+
+    }
+
+    // find the most similar model from this.models base on their name
+    private findModelFromName( name: string ): Object3D {
+        name = name.toLowerCase();
+
+        const filteredModels = this.models
+            .filter( model => (model as any).material );
+
+        let maxNumber = -1;
+        let maxIndex = -1;
+        filteredModels
+            .map( model => modelNameMatchingPercent( name, model.name ) )
+            .forEach( ( score, index ) => {
+                if ( score > maxNumber ) {
+                    maxNumber = score;
+                    maxIndex = index;
+                }
+            } );
+
+        return filteredModels[maxIndex];
+    }
+
     // CALLBACKS //
+}
+
+// returns the highest matching percent of a model's name
+function modelNameMatchingPercent( name: string, modelName: string ): number {
+    const list = modelName.split( '_' ).map( mName => similarity.compareTwoStrings( mName.toLowerCase(), name ) );
+    let maxNumber = -1;
+    list.forEach( ( score ) => {
+        if ( score > maxNumber ) {
+            maxNumber = score;
+        }
+    } )
+
+    return maxNumber;
 }

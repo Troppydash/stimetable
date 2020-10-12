@@ -1,6 +1,6 @@
-export * from './renderer/mapRenderer';
 export * from './renderer/mapRendererBuilder';
+export * from './renderer/mapRendererSettingsTypes';
 
 export function ItWorks() {
-    console.log("It Works");
+    console.log("It works");
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import * as MapRenderer from "@stimetable/map-renderer";
 import { MapRendererBuilder } from "@stimetable/map-renderer";
-
+import { MathUtils } from "three";
 
 function App() {
 
@@ -9,8 +9,9 @@ function App() {
 
     useEffect( () => {
 
+
        const builder = new MapRenderer.MapRendererBuilder( {
-            quality: 5,
+            quality: 8,
             targetElement: document.getElementById( "map" )!,
             gltfLocation: process.env.PUBLIC_URL + "scots-notex.gltf"
         }, {
@@ -32,7 +33,6 @@ function App() {
 
         builder?.register();
 
-
         return () => {
             builder?.dispose();
         }
@@ -45,6 +45,11 @@ function App() {
             <button onClick={(ev) => {
                 builder?.ref?.toggleFullscreen();
             }}>Full</button>
+            <button onClick={async (ev) => {
+                console.log(await builder?.ref?.focusObject( 'mck13'));
+            }}>
+                Select
+            </button>
             <div>
                 <div id="map"></div>
             </div>

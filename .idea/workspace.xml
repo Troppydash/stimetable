@@ -20,19 +20,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f57e6297-dbb5-479f-8bdb-46ba43981d32" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/map-renderer/src/renderer/helpers/fullscreenHandler.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/map-renderer/src/renderer/helpers/resourceTracker.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererBuilder.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererHelpers.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererSettingsHelpers.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/map-renderer/examples/test/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/examples/test/src/App.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/map-renderer/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/map-renderer/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/map-renderer/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/index.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/mapRenderer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/mapRenderer.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererHelpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/helpers/tweenHelper.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererSettingsTypes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererSettingsTypes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/typesHelpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/typesHelpers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/map-renderer/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/tsconfig.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,7 +80,7 @@
       <recent name="E:\Folder2020\Projects\NpmProjects\stimetable" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.build">
+  <component name="RunManager" selected="npm.start">
     <configuration name="build-watch" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/map-renderer/package.json" />
       <command value="run" />
@@ -118,9 +113,9 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.build" />
         <item itemvalue="npm.start" />
         <item itemvalue="npm.build-watch" />
+        <item itemvalue="npm.build" />
       </list>
     </recent_temporary>
   </component>
@@ -136,6 +131,8 @@
       <workItem from="1602201202961" duration="5803000" />
       <workItem from="1602311468833" duration="719000" />
       <workItem from="1602368861738" duration="16501000" />
+      <workItem from="1602395345248" duration="566000" />
+      <workItem from="1602480560245" duration="5352000" />
     </task>
     <task id="LOCAL-00001" summary="Scaffold">
       <created>1602206706104</created>
@@ -144,7 +141,21 @@
       <option name="project" value="LOCAL" />
       <updated>1602206706104</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Added the base api to the maprenderer">
+      <created>1602395456994</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1602395456994</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Updated license and version">
+      <created>1602395561785</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1602395561785</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -165,7 +176,9 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Scaffold" />
-    <option name="LAST_COMMIT_MESSAGE" value="Scaffold" />
+    <MESSAGE value="Added the base api to the maprenderer" />
+    <MESSAGE value="Updated license and version" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated license and version" />
   </component>
   <component name="WindowStateProjectService">
     <state x="829" y="418" width="569" height="286" key="Github.ShareDialog" timestamp="1602196598678">
@@ -176,26 +189,26 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="745" y="221" key="Github.UntrackedFilesDialog/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602196610537" />
-    <state width="1901" height="370" key="GridCell.Tab.0.bottom" timestamp="1602395335564">
+    <state width="1901" height="370" key="GridCell.Tab.0.bottom" timestamp="1602481325469">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1901" height="370" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602395335564" />
-    <state width="1901" height="370" key="GridCell.Tab.0.center" timestamp="1602395335564">
+    <state width="1901" height="370" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602481325469" />
+    <state width="1901" height="370" key="GridCell.Tab.0.center" timestamp="1602481325468">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1901" height="370" key="GridCell.Tab.0.center/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602395335564" />
-    <state width="1901" height="370" key="GridCell.Tab.0.left" timestamp="1602395335564">
+    <state width="1901" height="370" key="GridCell.Tab.0.center/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602481325468" />
+    <state width="1901" height="370" key="GridCell.Tab.0.left" timestamp="1602481325468">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1901" height="370" key="GridCell.Tab.0.left/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602395335564" />
-    <state width="1901" height="370" key="GridCell.Tab.0.right" timestamp="1602395335564">
+    <state width="1901" height="370" key="GridCell.Tab.0.left/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602481325468" />
+    <state width="1901" height="370" key="GridCell.Tab.0.right" timestamp="1602481325468">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1901" height="370" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602395335564" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1602206708204">
+    <state width="1901" height="370" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602481325468" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1602395562966">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602206708204" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602395562966" />
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1602369111744">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

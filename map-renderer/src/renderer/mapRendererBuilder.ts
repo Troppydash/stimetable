@@ -1,10 +1,10 @@
 import {
     AdvanceSettings,
     BasicSettings,
-    CreateDefaultMapRendererSettingsFromQuality, MergeMapRendererSettings
 } from "./mapRendererSettingsTypes";
 import { RecursivePartial } from "./typesHelpers";
 import { MapRenderer } from "./mapRenderer";
+import { CreateDefaultMapRendererSettingsFromQuality, MergeMapRendererSettings } from "./mapRendererSettingsHelpers";
 
 // MapRenderer Builder class
 export class MapRendererBuilder {
