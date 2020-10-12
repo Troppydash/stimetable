@@ -11,10 +11,15 @@ function App() {
 
 
        const builder = new MapRenderer.MapRendererBuilder( {
-            quality: 8,
+            quality: 5,
             targetElement: document.getElementById( "map" )!,
-            gltfLocation: process.env.PUBLIC_URL + "scots-notex.gltf"
+            gltfLocation: process.env.PUBLIC_URL + "scots.gltf"
         }, {
+           camera: {
+               smooth: true
+           },
+           performance: {
+           },
             canvas: {
                 size: {
                     height: 1024 / 16 * 9,
@@ -24,7 +29,7 @@ function App() {
             },
             map: {
                 timeDependedGetTimeOfDay: function () {
-                    return MapRenderer.TimeOfDay.morning;
+                    return MapRenderer.TimeOfDay.night;
                 }
             }
         } ) ;

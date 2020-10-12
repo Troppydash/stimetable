@@ -20,14 +20,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f57e6297-dbb5-479f-8bdb-46ba43981d32" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererSettingsHelpers.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/examples/test/public/scots.gltf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/src/renderer/imports.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/map-renderer/examples/test/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/examples/test/src/App.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/map-renderer/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/map-renderer/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/map-renderer/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/mapRenderer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/mapRenderer.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererHelpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/helpers/tweenHelper.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererSettingsTypes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererSettingsTypes.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,14 +69,14 @@
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\Folder2020\Projects\NpmProjects\stimetable\map-renderer\examples\test\public" />
+      <recent name="E:\Folder2020\Projects\NpmProjects\stimetable" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="E:\Folder2020\Projects\NpmProjects\stimetable\map-renderer\src\renderer\helpers" />
       <recent name="E:\Folder2020\Projects\NpmProjects\stimetable\map-renderer\example" />
       <recent name="E:\Folder2020\Projects\NpmProjects\stimetable\map-renderer\src\renderer" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="E:\Folder2020\Projects\NpmProjects\stimetable\map-renderer\examples\test\public" />
-      <recent name="E:\Folder2020\Projects\NpmProjects\stimetable" />
     </key>
   </component>
   <component name="RunManager" selected="npm.start">
@@ -132,7 +131,7 @@
       <workItem from="1602311468833" duration="719000" />
       <workItem from="1602368861738" duration="16501000" />
       <workItem from="1602395345248" duration="566000" />
-      <workItem from="1602480560245" duration="5352000" />
+      <workItem from="1602480560245" duration="9310000" />
     </task>
     <task id="LOCAL-00001" summary="Scaffold">
       <created>1602206706104</created>
@@ -155,7 +154,14 @@
       <option name="project" value="LOCAL" />
       <updated>1602395561785</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Focus obje backup">
+      <created>1602486322438</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1602486322439</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -178,7 +184,8 @@
     <MESSAGE value="Scaffold" />
     <MESSAGE value="Added the base api to the maprenderer" />
     <MESSAGE value="Updated license and version" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated license and version" />
+    <MESSAGE value="Focus obje backup" />
+    <option name="LAST_COMMIT_MESSAGE" value="Focus obje backup" />
   </component>
   <component name="WindowStateProjectService">
     <state x="829" y="418" width="569" height="286" key="Github.ShareDialog" timestamp="1602196598678">
@@ -189,22 +196,22 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="745" y="221" key="Github.UntrackedFilesDialog/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602196610537" />
-    <state width="1901" height="370" key="GridCell.Tab.0.bottom" timestamp="1602481325469">
+    <state width="1901" height="370" key="GridCell.Tab.0.bottom" timestamp="1602486453355">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1901" height="370" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602481325469" />
-    <state width="1901" height="370" key="GridCell.Tab.0.center" timestamp="1602481325468">
+    <state width="1901" height="370" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602486453355" />
+    <state width="1901" height="370" key="GridCell.Tab.0.center" timestamp="1602486453355">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1901" height="370" key="GridCell.Tab.0.center/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602481325468" />
-    <state width="1901" height="370" key="GridCell.Tab.0.left" timestamp="1602481325468">
+    <state width="1901" height="370" key="GridCell.Tab.0.center/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602486453355" />
+    <state width="1901" height="370" key="GridCell.Tab.0.left" timestamp="1602486453355">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1901" height="370" key="GridCell.Tab.0.left/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602481325468" />
-    <state width="1901" height="370" key="GridCell.Tab.0.right" timestamp="1602481325468">
+    <state width="1901" height="370" key="GridCell.Tab.0.left/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602486453355" />
+    <state width="1901" height="370" key="GridCell.Tab.0.right" timestamp="1602486453355">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1901" height="370" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602481325468" />
+    <state width="1901" height="370" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602486453355" />
     <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1602395562966">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

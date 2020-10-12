@@ -18,6 +18,7 @@ import { ResourceTracker } from "./helpers/resourceTracker";
 import { FullscreenHandler } from "./helpers/fullscreenHandler";
 import TWEEN from "@tweenjs/tween.js";
 import { CreatePositionTween, CreateRotationTween } from "./helpers/tweenHelper";
+import { Interaction } from 'three.interaction';
 
 export class MapRenderer {
 
@@ -74,6 +75,9 @@ export class MapRenderer {
     // is animation playing
     private isAnimating: boolean = false;
     private tweenID: number = -1;
+
+    // private dampingID: number = -1;
+    private interaction: Interaction;
 
     /// END->SELECTION FIELDS ///
 
@@ -154,8 +158,26 @@ export class MapRenderer {
             controls.zoomSpeed = 1;
             controls.panSpeed = 1;
             controls.enableZoom = true;
+
             if ( smooth ) {
-                controls.enableDamping = true;
+                // controls.enableDamping = true;
+                controls.addEventListener( 'change', this.render);
+                // controls.addEventListener('start', () => {
+                //     clearInterval(this.dampingID);
+                // })
+                // controls.addEventListener( 'end', () => {
+                //     let t = 0;
+                //     this.dampingID = setInterval( () => {
+                //         if ( t > 1500 ) {
+                //             clearInterval( this.dampingID );
+                //         }
+                //         this.update();
+                //         this.render();
+                //         t += 1000 / 60;
+                //     }, 1000 / 60 );
+                // } );
+            } else {
+                controls.addEventListener( 'change', this.render );
             }
 
             this.refs = {
@@ -164,6 +186,8 @@ export class MapRenderer {
                 camera,
                 scene
             };
+
+            this.interaction = new Interaction(renderer, scene, camera);
         }
         {
             // COMPOSER //
@@ -263,10 +287,11 @@ export class MapRenderer {
         }
 
         this.models = [];
-        this.animate();
+        this.render();
 
         this.loadMap()
             .then( () => {
+                this.render();
                 console.debug( this );
             } )
             .catch( err => {
@@ -278,7 +303,10 @@ export class MapRenderer {
     public dispose() {
         this.disposed = true;
 
+        cancelAnimationFrame( this.tweenID );
+
         this.resourceTracker.dispose();
+        this.interaction.destroy();
         this.settings.basic.targetElement.innerHTML = '';
         this.models = [];
     }
@@ -296,6 +324,7 @@ export class MapRenderer {
         fxaaPass?.uniforms['resolution'].value.set( 1 / width, 1 / height );
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
+        this.render();
     }
 
     // toggle canvas fullscreen
@@ -347,6 +376,13 @@ export class MapRenderer {
                             building.receiveShadow = true;
                         }
                         buildingMaterial.flatShading = true;
+
+                        const interaction = building as any;
+                        interaction.cursor = 'pointer';
+                        interaction.on('mouseover', () => {
+                            console.log('dsa');
+                        })
+
                         // TODO: Add on click
                     } else {
                         // if is ground
@@ -388,25 +424,23 @@ export class MapRenderer {
 
     // THREE.JS main render loop
     private animate = () => {
-        if ( this.disposed ) {
-            return;
-        }
+        // const { renderer, scene, camera, composer, controls } = this.refs;
+        this.tweenID = requestAnimationFrame( this.animate );
 
         // have to ignore this
         // @ts-ignore
         TWEEN.update();
-
-        const { renderer, scene, camera, composer, controls } = this.refs;
-        this.tweenID = requestAnimationFrame( this.animate );
-        // renderer.render( scene, camera );
         this.render();
-        composer?.render();
-        controls.update();
+    }
+
+    private update = () => {
+        this.refs.controls.update();
     }
 
     private render = () => {
-        const { renderer, scene, camera, composer, controls } = this.refs;
+        const { renderer, scene, camera, composer } = this.refs;
         renderer.render( scene, camera );
+        composer?.render();
     }
 
     // track an object for disposal later, acts as a proxy for this.resourceTracker
@@ -461,8 +495,8 @@ export class MapRenderer {
         camera.position.set( oldPos.x, oldPos.y, oldPos.z );
         camera.rotation.set( oldRot.x, oldRot.y, oldRot.z );
 
-
         if ( this.settings.advance.camera.smooth ) {
+            this.animate();
             // tween if allows
             const rotTween = CreateRotationTween( ( t ) => {
                 Quaternion.slerp( fromRot, toRot, camera.quaternion, t );
@@ -475,14 +509,17 @@ export class MapRenderer {
                 camera.position.set( toPosOffset.x, toPosOffset.y, toPosOffset.z );
                 controls.target = new THREE.Vector3( toPos.x, toPos.y, toPos.z );
             } );
-            await Promise.all( [ posTween, rotTween ] )
+            await Promise.all( [ rotTween, posTween ] )
             this.isAnimating = false;
+            cancelAnimationFrame( this.tweenID );
             return true;
         } else {
             // snaps if not allowed
             controls.target = toPos;
             camera.position.set( toPosOffset.x, toPosOffset.y, toPosOffset.z );
             this.isAnimating = false;
+            this.render();
+            this.update();
             return true;
         }
 
