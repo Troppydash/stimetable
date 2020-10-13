@@ -39,3 +39,9 @@ export function CreatePositionTween( from: Vector3, to: Vector3, onUpdate: (time
             .start();
     } )
 }
+
+const approxeq = (v1: number, v2: number, epsilon = 0.001) => Math.abs(v1 - v2) <= epsilon;
+
+export function IsVectorAlmostTheSame(v1: Vector3, v2: Vector3): boolean {
+    return approxeq(v1.x, v2.x) && approxeq(v1.y, v2.y) && approxeq(v1.z, v2.z);
+}

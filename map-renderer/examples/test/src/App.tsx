@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import * as MapRenderer from "@stimetable/map-renderer";
 import { MapRendererBuilder } from "@stimetable/map-renderer";
-import { MathUtils } from "three";
 
 function App() {
 
@@ -20,6 +19,9 @@ function App() {
            },
            performance: {
            },
+           quality: {
+               postprocessing: true
+           },
             canvas: {
                 size: {
                     height: 1024 / 16 * 9,
@@ -29,7 +31,7 @@ function App() {
             },
             map: {
                 timeDependedGetTimeOfDay: function () {
-                    return MapRenderer.TimeOfDay.night;
+                    return MapRenderer.TimeOfDay. afternoon;
                 }
             }
         } ) ;

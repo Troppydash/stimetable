@@ -1,11 +1,9 @@
 import * as THREE from 'three';
+import { Mesh, MeshStandardMaterial, Object3D, Quaternion, Vector3 } from 'three';
 import * as similarity from 'string-similarity';
 
-import {
-    BasicSettings,
-    AdvanceSettings, TimeOfDay, ColorPalette
-} from "./mapRendererSettingsTypes";
-import { CanvasSize, RecursivePartial } from "./typesHelpers";
+import { AdvanceSettings, BasicSettings, ColorPalette, TimeOfDay } from "./mapRendererSettingsTypes";
+import { CanvasSize } from "./typesHelpers";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { OutlinePass } from "three/examples/jsm/postprocessing/OutlinePass";
@@ -13,11 +11,10 @@ import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { Material, Mesh, MeshBasicMaterial, MeshStandardMaterial, Object3D, Quaternion, Vector3 } from "three";
 import { ResourceTracker } from "./helpers/resourceTracker";
 import { FullscreenHandler } from "./helpers/fullscreenHandler";
 import TWEEN from "@tweenjs/tween.js";
-import { CreatePositionTween, CreateRotationTween } from "./helpers/tweenHelper";
+import { CreatePositionTween, CreateRotationTween, IsVectorAlmostTheSame } from "./helpers/tweenHelper";
 import { Interaction } from 'three.interaction';
 
 export class MapRenderer {
@@ -38,7 +35,8 @@ export class MapRenderer {
         renderer: THREE.WebGLRenderer,
 
         composer?: EffectComposer,
-        outlinePass?: OutlinePass,
+        outlinePassSelected?: OutlinePass,
+        outlinePassHover?: OutlinePass,
         renderPass?: RenderPass,
         fxaaPass?: ShaderPass,
     };
@@ -71,14 +69,13 @@ export class MapRenderer {
 
     /// SELECTION FIELDS ///
     // the selected item's name
-    private selectedItemName: string = '';
+    private selectedItem?: Object3D;
     // is animation playing
     private isAnimating: boolean = false;
     private tweenID: number = -1;
 
-    // private dampingID: number = -1;
-    private interaction: Interaction;
-
+    // TODO:
+    // private isControlMoving: boolean = false;
     /// END->SELECTION FIELDS ///
 
     // FULLSCREEN HANDLER FIELDS //
@@ -91,6 +88,12 @@ export class MapRenderer {
     private fullscreenHandler: FullscreenHandler;
 
     /// END->FULLSCREEN HANDLER FIELDS ///
+
+    // INTERACTION FIELDS //
+    private interaction: Interaction;
+
+    private oldMousePosition: { screenX: number, screenY: number } = { screenX: 0, screenY: 0 };
+    // END->INTERACTION FIELDS //
 
 
     // constructor that sets up the mapRenderer
@@ -159,26 +162,7 @@ export class MapRenderer {
             controls.panSpeed = 1;
             controls.enableZoom = true;
 
-            if ( smooth ) {
-                // controls.enableDamping = true;
-                controls.addEventListener( 'change', this.render);
-                // controls.addEventListener('start', () => {
-                //     clearInterval(this.dampingID);
-                // })
-                // controls.addEventListener( 'end', () => {
-                //     let t = 0;
-                //     this.dampingID = setInterval( () => {
-                //         if ( t > 1500 ) {
-                //             clearInterval( this.dampingID );
-                //         }
-                //         this.update();
-                //         this.render();
-                //         t += 1000 / 60;
-                //     }, 1000 / 60 );
-                // } );
-            } else {
-                controls.addEventListener( 'change', this.render );
-            }
+            controls.addEventListener( 'change', this.render );
 
             this.refs = {
                 controls,
@@ -187,7 +171,7 @@ export class MapRenderer {
                 scene
             };
 
-            this.interaction = new Interaction(renderer, scene, camera);
+            this.interaction = new Interaction( renderer, scene, camera );
         }
         {
             // COMPOSER //
@@ -196,20 +180,31 @@ export class MapRenderer {
                 const renderPass = this.track( new RenderPass( this.refs.scene, this.refs.camera ) );
                 composer.addPass( renderPass );
 
-                const outlinePass = this.track( new OutlinePass( new THREE.Vector2( size.width, size.height ), this.refs.scene, this.refs.camera ) );
-                composer.addPass( outlinePass );
                 const params = {
                     edgeStrength: 4.0,
                     edgeGlow: 0.0,
                     edgeThickness: 1,
                     pulsePeriod: 0,
                 };
+                const outlinePass = this.track( new OutlinePass( new THREE.Vector2( size.width, size.height ), this.refs.scene, this.refs.camera ) );
+                composer.addPass( outlinePass );
                 outlinePass.edgeStrength = params.edgeStrength;
                 outlinePass.edgeGlow = params.edgeGlow;
                 outlinePass.edgeThickness = params.edgeThickness;
                 outlinePass.pulsePeriod = params.pulsePeriod;
                 outlinePass.visibleEdgeColor.set( colorPalette.buildings.selected );
                 outlinePass.hiddenEdgeColor.set( colorPalette.buildings.selected );
+
+                const outlinePassHover = this.track( new OutlinePass( new THREE.Vector2( size.width, size.height ), this.refs.scene, this.refs.camera ) );
+                composer.addPass( outlinePassHover );
+                outlinePassHover.edgeStrength = params.edgeStrength;
+                outlinePassHover.edgeGlow = params.edgeGlow;
+                outlinePassHover.edgeThickness = params.edgeThickness;
+                outlinePassHover.pulsePeriod = params.pulsePeriod;
+                outlinePassHover.visibleEdgeColor.set( colorPalette.buildings.hovered );
+                outlinePassHover.hiddenEdgeColor.set( colorPalette.buildings.hovered );
+
+
                 const fxaaPass = this.track( new ShaderPass( FXAAShader ) );
                 fxaaPass.uniforms['resolution'].value.set( 1 / size.width, 1 / size.height );
                 composer.addPass( fxaaPass );
@@ -218,7 +213,8 @@ export class MapRenderer {
                     ...this.refs,
                     composer,
                     renderPass,
-                    outlinePass,
+                    outlinePassSelected: outlinePass,
+                    outlinePassHover,
                     fxaaPass,
                 };
             }
@@ -226,6 +222,8 @@ export class MapRenderer {
 
         // setup lights
         {
+            const lightShadowMultiplier = timeOfDay === TimeOfDay.night ? 3 : (Math.min( quality, 7 ) + 6);
+
             const topLight = this.track( new THREE.DirectionalLight( colorPalette.toplight, 4 ) );
             topLight.position.set( 0, 25 * 3, -20 * 3 );
             topLight.target.position.set( 0, 0, 0 );
@@ -234,8 +232,8 @@ export class MapRenderer {
                 // topLight.castShadow = false;
                 topLight.shadow.camera.near = 18;
                 topLight.shadow.camera.far = 60 * 3;
-                topLight.shadow.mapSize.width = 2 ** (quality + 6);
-                topLight.shadow.mapSize.height = 2 ** (quality + 6);
+                topLight.shadow.mapSize.width = 2 ** lightShadowMultiplier;
+                topLight.shadow.mapSize.height = 2 ** lightShadowMultiplier;
                 topLight.shadow.bias = -0.01;
 
                 topLight.shadow.camera.left = -100;
@@ -256,8 +254,8 @@ export class MapRenderer {
             if ( shadow ) {
                 sidelight.castShadow = true;
 
-                sidelight.shadow.mapSize.width = 2 ** (quality + 6);
-                sidelight.shadow.mapSize.height = 2 ** (quality + 6);
+                sidelight.shadow.mapSize.width = 2 ** lightShadowMultiplier;
+                sidelight.shadow.mapSize.height = 2 ** lightShadowMultiplier;
                 sidelight.shadow.bias = -0.01;
 
                 sidelight.shadow.camera.left = -200;
@@ -309,6 +307,8 @@ export class MapRenderer {
         this.interaction.destroy();
         this.settings.basic.targetElement.innerHTML = '';
         this.models = [];
+
+        this.unbindAllCallbacks();
     }
 
 
@@ -379,9 +379,26 @@ export class MapRenderer {
 
                         const interaction = building as any;
                         interaction.cursor = 'pointer';
-                        interaction.on('mouseover', () => {
-                            console.log('dsa');
-                        })
+                        interaction.on( 'mouseover', () => { this.callback_interaction__onMouseHover(child)} );
+                        interaction.on( 'mouseout', () => { this.callback_interaction__onMouseExit(child)} );
+                        interaction.on( 'mousedown', ( event: any ) => {
+                            const { screenX, screenY } = event.data.originalEvent;
+                            child.userData['isMouseDown'] = true;
+                            this.oldMousePosition = {
+                                screenX,
+                                screenY
+                            };
+                        } );
+                        interaction.on( 'mouseup', ( event: any ) => {
+                            const leeway = 15;
+                            const { screenX, screenY } = event.data.originalEvent;
+                            if ( child.userData['isMouseDown'] === true
+                                && Math.abs( this.oldMousePosition.screenX - screenX ) < leeway
+                                && Math.abs( this.oldMousePosition.screenY - screenY ) < leeway ) {
+                                this.callback_interaction__onMouseClick( child );
+                                child.userData['isMouseDown'] = undefined;
+                            }
+                        } );
 
                         // TODO: Add on click
                     } else {
@@ -450,6 +467,28 @@ export class MapRenderer {
 
     // OTHERS //
 
+    private outlineObject( building: Object3D ) {
+        if ( this.settings.advance.quality.postprocessing ) {
+            this.refs.outlinePassSelected!.selectedObjects = [ building ];
+            this.refs.outlinePassHover!.selectedObjects = [ ];
+        } else {
+            ((building as Mesh).material as MeshStandardMaterial).color.set( this.colors.colorPalette.buildings.selected );
+        }
+        this.render();
+    }
+
+    private hoverObject ( building: Object3D) {
+        if (building.name === this.selectedItem?.name) {
+            return;
+        }
+        if ( this.settings.advance.quality.postprocessing ) {
+            this.refs.outlinePassHover!.selectedObjects = [ building ];
+        } else {
+            ((building as Mesh).material as MeshStandardMaterial).color.set( this.colors.colorPalette.buildings.hovered );
+        }
+        this.render();
+    }
+
     // focus an object with name, returns is successful
     public async focusObject( name: string ): Promise<boolean> {
         if ( this.isAnimating || name.length === 0 ) {
@@ -458,19 +497,12 @@ export class MapRenderer {
 
         this.isAnimating = true;
 
+        if ( !this.settings.advance.quality.postprocessing && this.selectedItem ) {
+            ((this.selectedItem as Mesh).material as MeshStandardMaterial).color.set( this.colors.colorPalette.buildings.unchanged );
+        }
+
         const mostLikelyItem = this.findModelFromName( name );
-
-        if ( this.selectedItemName === mostLikelyItem.name ) {
-            this.isAnimating = false;
-            return true;
-        }
-        this.selectedItemName = mostLikelyItem.name;
-
-        if ( this.settings.advance.quality.postprocessing ) {
-            this.refs.outlinePass!.selectedObjects = [ mostLikelyItem ];
-        } else {
-            ((mostLikelyItem as Mesh).material as MeshStandardMaterial).color.set( this.colors.colorPalette.buildings.selected );
-        }
+        this.selectedItem = mostLikelyItem;
 
         /// ANIMATIONS ///
 
@@ -479,11 +511,11 @@ export class MapRenderer {
         // find positions and rotations
         const fromPos = camera.position.clone();
         const toPos = mostLikelyItem.position.clone();
-        const toPosOffset = {
-            x: fromPos.x - toPos.x > 0 ? toPos.x + 30 : toPos.x - 30,
-            y: toPos.y + 45,
-            z: fromPos.z - toPos.z > 0 ? toPos.z + 30 : toPos.z - 30
-        };
+        const toPosOffset = new Vector3(
+            fromPos.x - toPos.x > 0 ? toPos.x + 30 : toPos.x - 30,
+            toPos.y + 45,
+            fromPos.z - toPos.z > 0 ? toPos.z + 30 : toPos.z - 30
+        );
 
         const fromRot = camera.quaternion.clone();
         const oldRot = fromRot.clone();
@@ -494,6 +526,13 @@ export class MapRenderer {
         const toRot = camera.quaternion.clone();
         camera.position.set( oldPos.x, oldPos.y, oldPos.z );
         camera.rotation.set( oldRot.x, oldRot.y, oldRot.z );
+
+        if ( IsVectorAlmostTheSame( controls.target, toPos ) && IsVectorAlmostTheSame( camera.position, toPosOffset ) ) {
+            this.isAnimating = false;
+            return true;
+        }
+
+        this.outlineObject( mostLikelyItem );
 
         if ( this.settings.advance.camera.smooth ) {
             this.animate();
@@ -506,8 +545,8 @@ export class MapRenderer {
             const posTween = CreatePositionTween( fromPos, toPosOffset as Vector3, ( from ) => {
                 camera.position.set( from.x, from.y, from.z );
             }, () => {
-                camera.position.set( toPosOffset.x, toPosOffset.y, toPosOffset.z );
-                controls.target = new THREE.Vector3( toPos.x, toPos.y, toPos.z );
+                camera.position.copy( toPosOffset );
+                controls.target = toPos;
             } );
             await Promise.all( [ rotTween, posTween ] )
             this.isAnimating = false;
@@ -547,6 +586,38 @@ export class MapRenderer {
     }
 
     // CALLBACKS //
+
+    private unbindAllCallbacks() {
+        this.refs.controls.removeEventListener( 'change', this.render );
+    }
+
+    private callback_interaction__onMouseHover = ( building: Mesh ) => {
+        this.hoverObject(building);
+    }
+
+    private callback_interaction__onMouseExit = ( building: Mesh ) => {
+
+    }
+
+    private callback_interaction__onMouseClick = ( building: Mesh ) => {
+        this.focusObject( building.name );
+    }
+
+    // private callback_control__onstart = () => {
+    //     clearInterval( this.dampingID );
+    // }
+    //
+    // private callback_control__onend = () => {
+    //     let t = 0;
+    //     this.dampingID = setInterval( () => {
+    //         if ( t > 1500 ) {
+    //             clearInterval( this.dampingID );
+    //         }
+    //         this.update();
+    //         this.render();
+    //         t += 1000 / 100;
+    //     }, 1000 / 100 );
+    // }
 }
 
 // returns the highest matching percent of a model's name
