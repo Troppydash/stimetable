@@ -16,6 +16,21 @@ import { FullscreenHandler } from "./helpers/fullscreenHandler";
 import TWEEN from "@tweenjs/tween.js";
 import { CreatePositionTween, CreateRotationTween, IsVectorAlmostTheSame } from "./helpers/tweenHelper";
 import { Interaction } from 'three.interaction';
+import { Feature } from "./features/feature";
+
+
+export interface MapRendererRefs {
+    camera: THREE.PerspectiveCamera,
+    controls: OrbitControls,
+    scene: THREE.Scene,
+    renderer: THREE.WebGLRenderer,
+
+    composer?: EffectComposer,
+    outlinePassSelected?: OutlinePass,
+    outlinePassHover?: OutlinePass,
+    renderPass?: RenderPass,
+    fxaaPass?: ShaderPass,
+}
 
 export class MapRenderer {
 
@@ -28,18 +43,7 @@ export class MapRenderer {
     };
 
     // refs for all important elements
-    private readonly refs: {
-        camera: THREE.PerspectiveCamera,
-        controls: OrbitControls,
-        scene: THREE.Scene,
-        renderer: THREE.WebGLRenderer,
-
-        composer?: EffectComposer,
-        outlinePassSelected?: OutlinePass,
-        outlinePassHover?: OutlinePass,
-        renderPass?: RenderPass,
-        fxaaPass?: ShaderPass,
-    };
+    private readonly refs: MapRendererRefs;
 
     // size of the threejs world
     private canvasSize: {
@@ -74,8 +78,7 @@ export class MapRenderer {
     private isAnimating: boolean = false;
     private tweenID: number = -1;
 
-    // TODO:
-    // private isControlMoving: boolean = false;
+    private isControlMoving: boolean = false;
     /// END->SELECTION FIELDS ///
 
     // FULLSCREEN HANDLER FIELDS //
@@ -95,13 +98,16 @@ export class MapRenderer {
     private oldMousePosition: { screenX: number, screenY: number } = { screenX: 0, screenY: 0 };
     // END->INTERACTION FIELDS //
 
+    // FEATURES //
+    private features: Feature[] = [];
 
     // constructor that sets up the mapRenderer
-    constructor( basic: BasicSettings, advance: AdvanceSettings ) {
+    constructor( basic: BasicSettings, advance: AdvanceSettings, features: Feature[] ) {
         this.settings = {
             basic,
             advance,
         }
+        this.features = features;
         console.debug( this.settings );
 
         // SETUP //
@@ -134,7 +140,7 @@ export class MapRenderer {
         {
             // RENDERER //
             const renderer = this.track( new THREE.WebGLRenderer( {
-                antialias,
+                antialias: !postprocessing ? antialias : false,
                 powerPreference
             } ) );
             renderer.setSize( size.width, size.height );
@@ -163,6 +169,8 @@ export class MapRenderer {
             controls.enableZoom = true;
 
             controls.addEventListener( 'change', this.render );
+            controls.addEventListener( 'start', this.callback_control_onstart );
+            controls.addEventListener( 'end', this.callback_control_onend );
 
             this.refs = {
                 controls,
@@ -284,6 +292,12 @@ export class MapRenderer {
             this.refs.scene.add( ambientLight );
         }
 
+        {
+            this.runAllFeatures((feature => {
+                feature.runSetup(this.refs);
+            }))
+        }
+
         this.models = [];
         this.render();
 
@@ -313,7 +327,8 @@ export class MapRenderer {
 
 
     // resize the map and camera size
-    public resize( width: number, height: number ) {
+    public resize( size: CanvasSize ) {
+        const { width, height } = size;
         const { renderer, composer, fxaaPass, camera } = this.refs;
         this.canvasSize.current = {
             width,
@@ -324,6 +339,9 @@ export class MapRenderer {
         fxaaPass?.uniforms['resolution'].value.set( 1 / width, 1 / height );
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
+
+        this.runAllFeatures(feature => feature.onResizeCanvas(size));
+
         this.render();
     }
 
@@ -334,13 +352,13 @@ export class MapRenderer {
             this.canvasSize.old = this.canvasSize.current;
             await this.fullscreenHandler.openFullscreen();
             setTimeout( () => {
-                this.resize( window.innerWidth, window.innerHeight );
+                this.resize( { width: window.innerWidth, height: window.innerHeight });
             }, 50 );
         } else {
             // un-fullscreen code goes here
             this.canvasSize.current = this.canvasSize.old;
             await this.fullscreenHandler.closeFullscreen();
-            this.resize( this.canvasSize.current.width, this.canvasSize.current.height );
+            this.resize( { width: this.canvasSize.current.width, height: this.canvasSize.current.height });
         }
     }
 
@@ -355,6 +373,9 @@ export class MapRenderer {
                 const ground: THREE.Object3D[] = [];
                 const lights: THREE.Object3D[] = [];
                 gltf.scene.traverse( child => {
+                    this.runAllFeatures(feature => {
+                        feature.onTraverseChild(child);
+                    });
                     if ( child instanceof THREE.PointLight ) {
                         // if is point light
                         const light = child;
@@ -379,8 +400,12 @@ export class MapRenderer {
 
                         const interaction = building as any;
                         interaction.cursor = 'pointer';
-                        interaction.on( 'mouseover', () => { this.callback_interaction__onMouseHover(child)} );
-                        interaction.on( 'mouseout', () => { this.callback_interaction__onMouseExit(child)} );
+                        interaction.on( 'mouseover', () => {
+                            this.callback_interaction__onMouseHover( child )
+                        } );
+                        interaction.on( 'mouseout', () => {
+                            this.callback_interaction__onMouseExit( child )
+                        } );
                         interaction.on( 'mousedown', ( event: any ) => {
                             const { screenX, screenY } = event.data.originalEvent;
                             child.userData['isMouseDown'] = true;
@@ -450,10 +475,12 @@ export class MapRenderer {
         this.render();
     }
 
+    // update control
     private update = () => {
         this.refs.controls.update();
     }
 
+    // render scene
     private render = () => {
         const { renderer, scene, camera, composer } = this.refs;
         renderer.render( scene, camera );
@@ -467,20 +494,36 @@ export class MapRenderer {
 
     // OTHERS //
 
+    // outline an object
     private outlineObject( building: Object3D ) {
         if ( this.settings.advance.quality.postprocessing ) {
             this.refs.outlinePassSelected!.selectedObjects = [ building ];
-            this.refs.outlinePassHover!.selectedObjects = [ ];
+            this.refs.outlinePassHover!.selectedObjects = [];
         } else {
             ((building as Mesh).material as MeshStandardMaterial).color.set( this.colors.colorPalette.buildings.selected );
         }
         this.render();
     }
 
-    private hoverObject ( building: Object3D) {
-        if (building.name === this.selectedItem?.name) {
+    // unhover an object
+    private unhoverObject(building: Object3D) {
+        if (!building) {
             return;
         }
+        if ( this.settings.advance.quality.postprocessing ) {
+            this.refs.outlinePassHover!.selectedObjects = this.refs.outlinePassHover!.selectedObjects.filter(obj => obj.name !== building.name);
+        } else {
+            ((building as Mesh).material as MeshStandardMaterial).color.set( this.colors.colorPalette.buildings.unchanged );
+        }
+        this.render();
+    }
+
+    // hover an object
+    private hoverObject( building: Object3D ) {
+        if ( building.name === this.selectedItem?.name ) {
+            return;
+        }
+
         if ( this.settings.advance.quality.postprocessing ) {
             this.refs.outlinePassHover!.selectedObjects = [ building ];
         } else {
@@ -585,6 +628,10 @@ export class MapRenderer {
         return filteredModels[maxIndex];
     }
 
+    private runAllFeatures(fn: (feature: Feature) => void) {
+        this.features.forEach(fn);
+    }
+
     // CALLBACKS //
 
     private unbindAllCallbacks() {
@@ -592,32 +639,34 @@ export class MapRenderer {
     }
 
     private callback_interaction__onMouseHover = ( building: Mesh ) => {
-        this.hoverObject(building);
+        if (this.isControlMoving) {
+            return;
+        }
+        this.hoverObject( building );
+        this.runAllFeatures(feature => feature.onHoverBuilding(building));
     }
 
     private callback_interaction__onMouseExit = ( building: Mesh ) => {
-
+        // have to unhover first
+        this.unhoverObject(building);
+        if (this.isControlMoving) {
+            return;
+        }
+        this.runAllFeatures(feature => feature.onExitBuilding(building));
     }
 
     private callback_interaction__onMouseClick = ( building: Mesh ) => {
         this.focusObject( building.name );
+        this.runAllFeatures(feature => feature.onClickBuilding(building));
     }
 
-    // private callback_control__onstart = () => {
-    //     clearInterval( this.dampingID );
-    // }
-    //
-    // private callback_control__onend = () => {
-    //     let t = 0;
-    //     this.dampingID = setInterval( () => {
-    //         if ( t > 1500 ) {
-    //             clearInterval( this.dampingID );
-    //         }
-    //         this.update();
-    //         this.render();
-    //         t += 1000 / 100;
-    //     }, 1000 / 100 );
-    // }
+    private callback_control_onstart = () => {
+        this.isControlMoving = true;
+    }
+
+    private callback_control_onend = () => {
+        this.isControlMoving = false;
+    }
 }
 
 // returns the highest matching percent of a model's name

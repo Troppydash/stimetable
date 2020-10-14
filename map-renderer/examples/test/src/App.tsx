@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import * as MapRenderer from "@stimetable/map-renderer";
-import { MapRendererBuilder } from "@stimetable/map-renderer";
+import { MapRendererBuilder, TimeOfDay } from "@stimetable/map-renderer/lib/renderer";
+import { TooltipFeature, TestFeature } from "@stimetable/map-renderer/lib/renderer/features";
 
 function App() {
 
@@ -8,20 +9,18 @@ function App() {
 
     useEffect( () => {
 
-
-       const builder = new MapRenderer.MapRendererBuilder( {
+        const builder = new MapRendererBuilder( {
             quality: 5,
             targetElement: document.getElementById( "map" )!,
             gltfLocation: process.env.PUBLIC_URL + "scots.gltf"
         }, {
-           camera: {
-               smooth: true
-           },
-           performance: {
-           },
-           quality: {
-               postprocessing: true
-           },
+            camera: {
+                smooth: true,
+            },
+            performance: {},
+            quality: {
+                postprocessing: true
+            },
             canvas: {
                 size: {
                     height: 1024 / 16 * 9,
@@ -31,12 +30,12 @@ function App() {
             },
             map: {
                 timeDependedGetTimeOfDay: function () {
-                    return MapRenderer.TimeOfDay. afternoon;
+                    return TimeOfDay.night;
                 }
             }
-        } ) ;
-
-        setBuilder(builder);
+        } );
+        builder.addFeature( new TooltipFeature() );
+        setBuilder( builder );
 
         builder?.register();
 
@@ -49,11 +48,12 @@ function App() {
     return (
         <div>
             <p>Text</p>
-            <button onClick={(ev) => {
+            <button onClick={( ev ) => {
                 builder?.ref?.toggleFullscreen();
-            }}>Full</button>
-            <button onClick={async (ev) => {
-                console.log(await builder?.ref?.focusObject( 'mck13'));
+            }}>Full
+            </button>
+            <button onClick={async ( ev ) => {
+                console.log( await builder?.ref?.focusObject( 'mck13' ) );
             }}>
                 Select
             </button>

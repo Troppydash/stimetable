@@ -5,6 +5,7 @@ import {
 import { RecursivePartial } from "./typesHelpers";
 import { MapRenderer } from "./mapRenderer";
 import { CreateDefaultMapRendererSettingsFromQuality, MergeMapRendererSettings } from "./mapRendererSettingsHelpers";
+import { Feature } from "./features";
 
 // MapRenderer Builder class
 export class MapRendererBuilder {
@@ -15,6 +16,8 @@ export class MapRendererBuilder {
     }
 
     public ref?: MapRenderer;
+
+    private features: Feature[] = [];
 
     // constructor with settings as parameters
     constructor( basicSettings: BasicSettings, advanceSettings?: RecursivePartial<AdvanceSettings> ) {
@@ -41,9 +44,15 @@ export class MapRendererBuilder {
         }
     }
 
+
+    public addFeature( feature: Feature ): this {
+        this.features = [ ...this.features, feature ];
+        return this;
+    }
+
     // registers the mapRenderer, this calls loadMap
     public register(): MapRenderer {
-        this.ref = new MapRenderer(this.settings.basic, this.settings.advance);
+        this.ref = new MapRenderer( this.settings.basic, this.settings.advance, this.features );
         return this.ref;
     }
 

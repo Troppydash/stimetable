@@ -19,23 +19,14 @@ export class FullscreenHandler {
             return;
         }
 
-        let success = false;
         if ( this.root.requestFullscreen ) {
             await this.root.requestFullscreen();
-            success = true;
         } else if ( this.root.mozRequestFullScreen ) { /* Firefox */
             await this.root.mozRequestFullScreen();
-            success = true;
         } else if ( this.root.webkitRequestFullscreen ) { /* Chrome, Safari and Opera */
             await this.root.webkitRequestFullscreen();
-            success = true;
         } else if ( this.root.msRequestFullscreen ) { /* IE/Edge */
             await this.root.msRequestFullscreen();
-            success = true;
-        }
-
-        if ( !success ) {
-            return;
         }
 
         this.isFullscreen = true;
