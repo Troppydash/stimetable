@@ -1,4 +1,4 @@
-import { Feature } from "./feature";
+import { Feature } from "./Feature";
 import { CanvasSize, THREEObject } from "../typesHelpers";
 import { MapRendererRefs } from "../mapRenderer";
 
@@ -33,6 +33,22 @@ export class TestFeature extends Feature {
 
     runSetup( refs: MapRendererRefs ): void {
         this.log('runSetup');
+    }
+
+    onMoveBuilding( building: THREEObject, event: Event ): void {
+        this.log('onMoveBuilding');
+    }
+
+    runCleanup(): void {
+        this.log('runCleanup');
+    }
+
+    onControlEnd(): void {
+        this.log('onControlEnd');
+    }
+
+    onControlStart(): void {
+        this.log('onControlStart');
     }
 
 }

@@ -3,7 +3,7 @@ import { Mesh, MeshStandardMaterial, Object3D, Quaternion, Vector3 } from 'three
 import * as similarity from 'string-similarity';
 
 import { AdvanceSettings, BasicSettings, ColorPalette, TimeOfDay } from "./mapRendererSettingsTypes";
-import { CanvasSize } from "./typesHelpers";
+import { CanvasSize, THREEObject } from "./typesHelpers";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { OutlinePass } from "three/examples/jsm/postprocessing/OutlinePass";
@@ -16,7 +16,7 @@ import { FullscreenHandler } from "./helpers/fullscreenHandler";
 import TWEEN from "@tweenjs/tween.js";
 import { CreatePositionTween, CreateRotationTween, IsVectorAlmostTheSame } from "./helpers/tweenHelper";
 import { Interaction } from 'three.interaction';
-import { Feature } from "./features/feature";
+import { Feature } from "./features";
 
 
 export interface MapRendererRefs {
@@ -323,6 +323,7 @@ export class MapRenderer {
         this.models = [];
 
         this.unbindAllCallbacks();
+        this.runAllFeatures(feature => feature.runCleanup());
     }
 
 
@@ -400,12 +401,15 @@ export class MapRenderer {
 
                         const interaction = building as any;
                         interaction.cursor = 'pointer';
-                        interaction.on( 'mouseover', () => {
-                            this.callback_interaction__onMouseHover( child )
+                        interaction.on( 'mouseover', (event: any) => {
+                            this.callback_interaction__onMouseHover( child, event.data.originalEvent as PointerEvent  )
                         } );
-                        interaction.on( 'mouseout', () => {
-                            this.callback_interaction__onMouseExit( child )
+                        interaction.on( 'mouseout', (event: any) => {
+                            this.callback_interaction__onMouseExit( child, event.data.originalEvent as PointerEvent )
                         } );
+                        interaction.on('mousemove', (event: any) => {
+                            this.callback_interaction__onMouseMove( child, event.data.originalEvent as PointerEvent )
+                        });
                         interaction.on( 'mousedown', ( event: any ) => {
                             const { screenX, screenY } = event.data.originalEvent;
                             child.userData['isMouseDown'] = true;
@@ -420,7 +424,7 @@ export class MapRenderer {
                             if ( child.userData['isMouseDown'] === true
                                 && Math.abs( this.oldMousePosition.screenX - screenX ) < leeway
                                 && Math.abs( this.oldMousePosition.screenY - screenY ) < leeway ) {
-                                this.callback_interaction__onMouseClick( child );
+                                this.callback_interaction__onMouseClick( child, event.data.originalEvent as PointerEvent );
                                 child.userData['isMouseDown'] = undefined;
                             }
                         } );
@@ -638,34 +642,43 @@ export class MapRenderer {
         this.refs.controls.removeEventListener( 'change', this.render );
     }
 
-    private callback_interaction__onMouseHover = ( building: Mesh ) => {
+    private callback_interaction__onMouseHover = ( building: Mesh, event: PointerEvent ) => {
         if (this.isControlMoving) {
             return;
         }
         this.hoverObject( building );
-        this.runAllFeatures(feature => feature.onHoverBuilding(building));
+        this.runAllFeatures(feature => feature.onHoverBuilding(building, event));
     }
 
-    private callback_interaction__onMouseExit = ( building: Mesh ) => {
+    private callback_interaction__onMouseExit = ( building: Mesh, event: PointerEvent ) => {
         // have to unhover first
         this.unhoverObject(building);
         if (this.isControlMoving) {
             return;
         }
-        this.runAllFeatures(feature => feature.onExitBuilding(building));
+        this.runAllFeatures(feature => feature.onExitBuilding(building, event));
     }
 
-    private callback_interaction__onMouseClick = ( building: Mesh ) => {
+    private callback_interaction__onMouseClick = ( building: Mesh, event: PointerEvent ) => {
         this.focusObject( building.name );
-        this.runAllFeatures(feature => feature.onClickBuilding(building));
+        this.runAllFeatures(feature => feature.onClickBuilding(building, event));
+    }
+
+    private callback_interaction__onMouseMove = ( building: Mesh, event: PointerEvent ) => {
+        if (this.isControlMoving) {
+            return;
+        }
+        this.runAllFeatures(feature => feature.onMoveBuilding(building, event));
     }
 
     private callback_control_onstart = () => {
         this.isControlMoving = true;
+        this.runAllFeatures(feature => feature.onControlStart());
     }
 
     private callback_control_onend = () => {
         this.isControlMoving = false;
+        this.runAllFeatures(feature => feature.onControlEnd());
     }
 }
 
