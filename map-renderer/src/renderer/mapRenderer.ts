@@ -3,7 +3,7 @@ import { Mesh, MeshStandardMaterial, Object3D, Quaternion, Vector3 } from 'three
 import * as similarity from 'string-similarity';
 
 import { AdvanceSettings, BasicSettings, ColorPalette, TimeOfDay } from "./mapRendererSettingsTypes";
-import { CanvasSize, THREEObject } from "./typesHelpers";
+import { CanvasSize } from "./typesHelpers";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { OutlinePass } from "three/examples/jsm/postprocessing/OutlinePass";
@@ -18,7 +18,7 @@ import { CreatePositionTween, CreateRotationTween, IsVectorAlmostTheSame } from 
 import { Interaction } from 'three.interaction';
 import { Feature } from "./features";
 
-
+// refs for mapRenderer
 export interface MapRendererRefs {
     camera: THREE.PerspectiveCamera,
     controls: OrbitControls,
@@ -32,6 +32,7 @@ export interface MapRendererRefs {
     fxaaPass?: ShaderPass,
 }
 
+// MapRenderer is the instance created for rendering maps and handling events
 export class MapRenderer {
 
     /// BASIC FIELDS ///
@@ -59,7 +60,7 @@ export class MapRenderer {
     private models: THREE.Object3D[] = [];
 
     // cached colors calculated from the constructor
-    private colors: {
+    private readonly colors: {
         timeOfDay: TimeOfDay,
         colorPalette: ColorPalette,
     };
@@ -116,7 +117,7 @@ export class MapRenderer {
         const { antialias, shadow, postprocessing } = this.settings.advance.quality;
         const { powerPreference } = this.settings.advance.performance;
         const { size } = this.settings.advance.canvas;
-        const { smooth } = this.settings.advance.camera;
+        // const { smooth } = this.settings.advance.camera;
         const { quality } = this.settings.basic;
 
         const { timeDependedColors, timeDependedGetTimeOfDay } = this.settings.advance.map;
@@ -316,9 +317,12 @@ export class MapRenderer {
         this.disposed = true;
 
         cancelAnimationFrame( this.tweenID );
-
+        this.refs.renderer.forceContextLoss();
         this.resourceTracker.dispose();
-        this.interaction.destroy();
+        try {
+            this.interaction.destroy();
+        } catch (_) {
+        }
         this.settings.basic.targetElement.innerHTML = '';
         this.models = [];
 
@@ -329,6 +333,10 @@ export class MapRenderer {
 
     // resize the map and camera size
     public resize( size: CanvasSize ) {
+        if (this.settings.advance.canvas.fixed) {
+            return;
+        }
+
         const { width, height } = size;
         const { renderer, composer, fxaaPass, camera } = this.refs;
         this.canvasSize.current = {
@@ -348,6 +356,11 @@ export class MapRenderer {
 
     // toggle canvas fullscreen
     public toggleFullscreen = async () => {
+        if (this.settings.advance.canvas.fixed) {
+            return;
+        }
+
+        this.runAllFeatures(feature => feature.onToggleFullscreen(!this.isFullscreen));
         if ( !this.isFullscreen ) {
             // fullscreen code goes here
             this.canvasSize.old = this.canvasSize.current;
@@ -371,7 +384,7 @@ export class MapRenderer {
         return new Promise( ( resolve, reject ) => {
             const loader = new GLTFLoader();
             loader.load( this.settings.basic.gltfLocation, ( gltf ) => {
-                const ground: THREE.Object3D[] = [];
+                // const ground: THREE.Object3D[] = [];
                 const lights: THREE.Object3D[] = [];
                 gltf.scene.traverse( child => {
                     this.runAllFeatures(feature => {

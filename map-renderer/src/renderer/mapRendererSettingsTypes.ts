@@ -78,3 +78,4 @@ export interface ColorPalette {
         selected: HexColor,
     },
 }
+

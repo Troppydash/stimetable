@@ -1,9 +1,7 @@
-
-// Base Features class
 import { MapRendererRefs } from "../mapRenderer";
-import { Object3D } from "three";
 import { CanvasSize, THREEObject } from "../typesHelpers";
 
+// Base Features class
 export abstract class Feature {
     abstract runSetup(refs: MapRendererRefs): void;
     abstract runCleanup(): void;
@@ -15,4 +13,5 @@ export abstract class Feature {
     abstract onControlStart(): void;
     abstract onControlEnd(): void;
     abstract onResizeCanvas(newSize: CanvasSize): void;
+    abstract onToggleFullscreen(isFullscreen: boolean): void;
 }

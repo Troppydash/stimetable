@@ -21,15 +21,13 @@
   <component name="ChangeListManager">
     <list default="true" id="f57e6297-dbb5-479f-8bdb-46ba43981d32" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/map-renderer/examples/test/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/examples/test/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/map-renderer/examples/test/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/examples/test/src/App.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/map-renderer/examples/test/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/examples/test/src/App.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/map-renderer/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/features/Feature.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/features/Feature.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/features/TestFeature.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/features/TestFeature.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/features/TooltipFeature.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/features/TooltipFeature.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/features/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/features/index.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/mapRenderer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/mapRenderer.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererSettingsTypes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererSettingsTypes.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -137,7 +135,8 @@
       <workItem from="1602480560245" duration="9891000" />
       <workItem from="1602571656041" duration="5285000" />
       <workItem from="1602649185174" duration="7266000" />
-      <workItem from="1602741775733" duration="4431000" />
+      <workItem from="1602741775733" duration="4785000" />
+      <workItem from="1602826745949" duration="2242000" />
     </task>
     <task id="LOCAL-00001" summary="Scaffold">
       <created>1602206706104</created>
@@ -188,7 +187,14 @@
       <option name="project" value="LOCAL" />
       <updated>1602664792983</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="added Tooltip Feature">
+      <created>1602746521282</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1602746521282</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -215,13 +221,14 @@
     <MESSAGE value="Performance improvement by limiting rendering and added focus object method" />
     <MESSAGE value="Added onclick onhover onexit handlers to the mapRenderer" />
     <MESSAGE value="Added Features and improved highlighting" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added Features and improved highlighting" />
+    <MESSAGE value="added Tooltip Feature" />
+    <option name="LAST_COMMIT_MESSAGE" value="added Tooltip Feature" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="765" y="236" key="#com.intellij.ide.util.MemberChooser" timestamp="1602745765809">
+    <state x="765" y="236" key="#com.intellij.ide.util.MemberChooser" timestamp="1602829135657">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="765" y="236" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602745765809" />
+    <state x="765" y="236" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602829135657" />
     <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1602652747089">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -234,26 +241,30 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="745" y="221" key="Github.UntrackedFilesDialog/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602196610537" />
-    <state width="1901" height="370" key="GridCell.Tab.0.bottom" timestamp="1602746210501">
+    <state width="1901" height="370" key="GridCell.Tab.0.bottom" timestamp="1602829086076">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1901" height="370" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602746210501" />
-    <state width="1901" height="370" key="GridCell.Tab.0.center" timestamp="1602746210501">
+    <state width="1901" height="370" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602829086076" />
+    <state width="1901" height="370" key="GridCell.Tab.0.center" timestamp="1602829086076">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1901" height="370" key="GridCell.Tab.0.center/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602746210501" />
-    <state width="1901" height="370" key="GridCell.Tab.0.left" timestamp="1602746210501">
+    <state width="1901" height="370" key="GridCell.Tab.0.center/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602829086076" />
+    <state width="1901" height="370" key="GridCell.Tab.0.left" timestamp="1602829086076">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1901" height="370" key="GridCell.Tab.0.left/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602746210501" />
-    <state width="1901" height="370" key="GridCell.Tab.0.right" timestamp="1602746210501">
+    <state width="1901" height="370" key="GridCell.Tab.0.left/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602829086076" />
+    <state width="1901" height="370" key="GridCell.Tab.0.right" timestamp="1602829086076">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1901" height="370" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602746210501" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1602664794448">
+    <state width="1901" height="370" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602829086076" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1602746523081">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602664794448" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602746523081" />
+    <state x="616" y="240" key="run.anything.popup" timestamp="1602829645233">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="616" y="240" key="run.anything.popup/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602829645233" />
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1602369111744">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

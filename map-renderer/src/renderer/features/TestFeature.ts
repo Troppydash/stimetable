@@ -51,4 +51,8 @@ export class TestFeature extends Feature {
         this.log('onControlStart');
     }
 
+    onToggleFullscreen( isFullscreen: boolean ): void {
+        this.log('onToggleFullscreen');
+    }
+
 }

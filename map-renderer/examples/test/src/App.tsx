@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import * as MapRenderer from "@stimetable/map-renderer";
 import { MapRendererBuilder, TimeOfDay } from "@stimetable/map-renderer/lib/renderer";
-import { TooltipFeature, TestFeature, PositionOffset } from "@stimetable/map-renderer/lib/renderer/features";
+import { TooltipFeature, Feature, PositionOffset, TestFeature } from "@stimetable/map-renderer/lib/renderer/features";
 import './App.css';
 
 function App() {
@@ -12,7 +12,7 @@ function App() {
 
     useEffect( () => {
 
-        const builder = new MapRendererBuilder( {
+        const mapBuilder = new MapRendererBuilder( {
             quality: 7,
             targetElement: document.getElementById( "map" )!,
             gltfLocation: process.env.PUBLIC_URL + "scots.gltf"
@@ -29,7 +29,6 @@ function App() {
                     height: 1024 / 16 * 9,
                     width: 1024,
                 },
-                fixed: true,
             },
             map: {
                 timeDependedGetTimeOfDay: function () {
@@ -37,7 +36,7 @@ function App() {
                 }
             }
         } );
-        builder.addFeature( new TooltipFeature(
+        mapBuilder.addFeature( new TooltipFeature(
             document.getElementById( "map" )!,
             document.getElementById( 'map-tooltip' )!,
             ( newText: string, relativePosition: PositionOffset ) => {
@@ -45,19 +44,26 @@ function App() {
                 setRelPos( relativePosition );
             },
         ) );
-        setBuilder( builder );
+        mapBuilder.addFeature(new TestFeature("Test"));
+        setBuilder( mapBuilder );
 
-        builder?.register();
 
         return () => {
-            builder?.dispose();
         }
     }, [] );
+
+
 
 
     return (
         <div>
             <p>Text</p>
+            <button onClick={() => {
+                builder?.register();
+            }}>create</button>
+            <button onClick={() => {
+                builder?.dispose();
+            }}>dispose</button>
             <button onClick={( ev ) => {
                 builder?.ref?.toggleFullscreen();
             }}>Full

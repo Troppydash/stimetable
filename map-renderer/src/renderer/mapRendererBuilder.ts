@@ -52,6 +52,9 @@ export class MapRendererBuilder {
 
     // registers the mapRenderer, this calls loadMap
     public register(): MapRenderer {
+        if (this.ref) {
+            this.dispose();
+        }
         this.ref = new MapRenderer( this.settings.basic, this.settings.advance, this.features );
         return this.ref;
     }

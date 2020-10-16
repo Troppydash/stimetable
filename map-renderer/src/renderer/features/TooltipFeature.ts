@@ -62,12 +62,14 @@ export class TooltipFeature extends Feature {
     }
 
     onResizeCanvas( newSize: CanvasSize ): void {
+        this.hideTooltip();
     }
 
     onTraverseChild( child: THREEObject ): void {
     }
 
     runSetup( refs: MapRendererRefs ): void {
+        this.hideTooltip();
     }
 
     onMoveBuilding( building: THREEObject, event: PointerEvent ): void {
@@ -109,4 +111,7 @@ export class TooltipFeature extends Feature {
         this.hoveredBuilding = undefined;
     }
 
+    onToggleFullscreen(isFullscreen: boolean): void {
+        this.hideTooltip();
+    }
 }
