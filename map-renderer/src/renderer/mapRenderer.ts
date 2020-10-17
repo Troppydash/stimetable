@@ -52,6 +52,7 @@ export class MapRenderer {
         current: CanvasSize,
     };
 
+    private globalScale: number;
     /// END->BASIC FIELDS ///
 
     /// THREEJS FIELDS ///
@@ -108,6 +109,7 @@ export class MapRenderer {
             basic,
             advance,
         }
+        this.globalScale = advance.canvas.globalScale;
         this.features = features;
         console.debug( this.settings );
 
@@ -159,7 +161,7 @@ export class MapRenderer {
 
             // CAMERA //
             const camera = this.track( new THREE.PerspectiveCamera( 55, size.width / size.height, 0.1, 4000 ) );
-            camera.position.set( 0, 200, 200 );
+            camera.position.set( 0, 200 * this.globalScale, 200 * this.globalScale );
             scene.add( camera );
 
             // CONTROLS //
@@ -229,6 +231,7 @@ export class MapRenderer {
             }
         }
 
+        const { ambient } = this.settings.advance.lighting;
         // setup lights
         {
             const lightShadowMultiplier = timeOfDay === TimeOfDay.night ? 3 : (Math.min( quality, 7 ) + 6);
@@ -239,16 +242,16 @@ export class MapRenderer {
 
             if ( shadow ) {
                 // topLight.castShadow = false;
-                topLight.shadow.camera.near = 18;
-                topLight.shadow.camera.far = 60 * 3;
+                topLight.shadow.camera.near = 18 * this.globalScale;
+                topLight.shadow.camera.far = 180 * this.globalScale;
                 topLight.shadow.mapSize.width = 2 ** lightShadowMultiplier;
                 topLight.shadow.mapSize.height = 2 ** lightShadowMultiplier;
                 topLight.shadow.bias = -0.01;
 
-                topLight.shadow.camera.left = -100;
-                topLight.shadow.camera.right = 100;
-                topLight.shadow.camera.top = 175;
-                topLight.shadow.camera.bottom = -100;
+                topLight.shadow.camera.left = -100 * this.globalScale;
+                topLight.shadow.camera.right = 100 * this.globalScale;
+                topLight.shadow.camera.top = 175 * this.globalScale;
+                topLight.shadow.camera.bottom = -100 * this.globalScale;
             }
 
             this.refs.scene.add( topLight );
@@ -257,8 +260,8 @@ export class MapRenderer {
 
             // Side light
             const sidelight = this.track( new THREE.DirectionalLight( colorPalette.sunlight, 3 ) );
-            sidelight.position.set( 50 * 2, 70 * 2, 120 * 2 );
-            sidelight.target.position.set( 30, 0, 0, );
+            sidelight.position.set( 100 * this.globalScale, 140 * this.globalScale, 240 * this.globalScale);
+            sidelight.target.position.set( 30 * this.globalScale, 0, 0, );
 
             if ( shadow ) {
                 sidelight.castShadow = true;
@@ -267,19 +270,19 @@ export class MapRenderer {
                 sidelight.shadow.mapSize.height = 2 ** lightShadowMultiplier;
                 sidelight.shadow.bias = -0.01;
 
-                sidelight.shadow.camera.left = -200;
-                sidelight.shadow.camera.right = 200;
-                sidelight.shadow.camera.top = 200;
-                sidelight.shadow.camera.bottom = -200;
+                sidelight.shadow.camera.left = -200 * this.globalScale;
+                sidelight.shadow.camera.right = 200 * this.globalScale;
+                sidelight.shadow.camera.top = 200 * this.globalScale;
+                sidelight.shadow.camera.bottom = -200 * this.globalScale;
 
-                sidelight.shadow.camera.near = 20;
-                sidelight.shadow.camera.far = 450;
+                sidelight.shadow.camera.near = 20 * this.globalScale;
+                sidelight.shadow.camera.far = 450 * this.globalScale;
             }
 
             this.refs.scene.add( sidelight );
 
             // add fake sun
-            const geometry = this.track( new THREE.SphereBufferGeometry( 5, 64, 64 ) );
+            const geometry = this.track( new THREE.SphereBufferGeometry( 5 * this.globalScale, 64, 64 ) );
             const material = this.track( new THREE.MeshStandardMaterial() );
             material.color.set( colorPalette.sunlight );
             material.emissive.set( colorPalette.sunlight );
@@ -289,14 +292,14 @@ export class MapRenderer {
             this.refs.scene.add( mesh );
 
             // Ambient Light
-            const ambientLight = this.track( new THREE.AmbientLight( colorPalette.ambient, 1 ) );
+            const ambientLight = this.track( new THREE.AmbientLight( colorPalette.ambient, ambient.intensity ) );
             this.refs.scene.add( ambientLight );
         }
 
         {
-            this.runAllFeatures((feature => {
-                feature.runSetup(this.refs);
-            }))
+            this.runAllFeatures( (feature => {
+                feature.runSetup( this.refs );
+            }) )
         }
 
         this.models = [];
@@ -321,19 +324,19 @@ export class MapRenderer {
         this.resourceTracker.dispose();
         try {
             this.interaction.destroy();
-        } catch (_) {
+        } catch ( _ ) {
         }
         this.settings.basic.targetElement.innerHTML = '';
         this.models = [];
 
         this.unbindAllCallbacks();
-        this.runAllFeatures(feature => feature.runCleanup());
+        this.runAllFeatures( feature => feature.runCleanup() );
     }
 
 
     // resize the map and camera size
     public resize( size: CanvasSize ) {
-        if (this.settings.advance.canvas.fixed) {
+        if ( this.settings.advance.canvas.fixed ) {
             return;
         }
 
@@ -349,30 +352,30 @@ export class MapRenderer {
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
 
-        this.runAllFeatures(feature => feature.onResizeCanvas(size));
+        this.runAllFeatures( feature => feature.onResizeCanvas( size ) );
 
         this.render();
     }
 
     // toggle canvas fullscreen
     public toggleFullscreen = async () => {
-        if (this.settings.advance.canvas.fixed) {
+        if ( this.settings.advance.canvas.fixed ) {
             return;
         }
 
-        this.runAllFeatures(feature => feature.onToggleFullscreen(!this.isFullscreen));
+        this.runAllFeatures( feature => feature.onToggleFullscreen( !this.isFullscreen ) );
         if ( !this.isFullscreen ) {
             // fullscreen code goes here
             this.canvasSize.old = this.canvasSize.current;
             await this.fullscreenHandler.openFullscreen();
             setTimeout( () => {
-                this.resize( { width: window.innerWidth, height: window.innerHeight });
+                this.resize( { width: window.innerWidth, height: window.innerHeight } );
             }, 50 );
         } else {
             // un-fullscreen code goes here
             this.canvasSize.current = this.canvasSize.old;
             await this.fullscreenHandler.closeFullscreen();
-            this.resize( { width: this.canvasSize.current.width, height: this.canvasSize.current.height });
+            this.resize( { width: this.canvasSize.current.width, height: this.canvasSize.current.height } );
         }
     }
 
@@ -387,9 +390,9 @@ export class MapRenderer {
                 // const ground: THREE.Object3D[] = [];
                 const lights: THREE.Object3D[] = [];
                 gltf.scene.traverse( child => {
-                    this.runAllFeatures(feature => {
-                        feature.onTraverseChild(child);
-                    });
+                    this.runAllFeatures( feature => {
+                        feature.onTraverseChild( child );
+                    } );
                     if ( child instanceof THREE.PointLight ) {
                         // if is point light
                         const light = child;
@@ -414,15 +417,15 @@ export class MapRenderer {
 
                         const interaction = building as any;
                         interaction.cursor = 'pointer';
-                        interaction.on( 'mouseover', (event: any) => {
-                            this.callback_interaction__onMouseHover( child, event.data.originalEvent as PointerEvent  )
+                        interaction.on( 'mouseover', ( event: any ) => {
+                            this.callback_interaction__onMouseHover( child, event.data.originalEvent as PointerEvent )
                         } );
-                        interaction.on( 'mouseout', (event: any) => {
+                        interaction.on( 'mouseout', ( event: any ) => {
                             this.callback_interaction__onMouseExit( child, event.data.originalEvent as PointerEvent )
                         } );
-                        interaction.on('mousemove', (event: any) => {
+                        interaction.on( 'mousemove', ( event: any ) => {
                             this.callback_interaction__onMouseMove( child, event.data.originalEvent as PointerEvent )
-                        });
+                        } );
                         interaction.on( 'mousedown', ( event: any ) => {
                             const { screenX, screenY } = event.data.originalEvent;
                             child.userData['isMouseDown'] = true;
@@ -523,12 +526,12 @@ export class MapRenderer {
     }
 
     // unhover an object
-    private unhoverObject(building: Object3D) {
-        if (!building) {
+    private unhoverObject( building: Object3D ) {
+        if ( !building ) {
             return;
         }
         if ( this.settings.advance.quality.postprocessing ) {
-            this.refs.outlinePassHover!.selectedObjects = this.refs.outlinePassHover!.selectedObjects.filter(obj => obj.name !== building.name);
+            this.refs.outlinePassHover!.selectedObjects = this.refs.outlinePassHover!.selectedObjects.filter( obj => obj.name !== building.name );
         } else {
             ((building as Mesh).material as MeshStandardMaterial).color.set( this.colors.colorPalette.buildings.unchanged );
         }
@@ -549,20 +552,22 @@ export class MapRenderer {
         this.render();
     }
 
-    // focus an object with name, returns is successful
-    public async focusObject( name: string ): Promise<boolean> {
-        if ( this.isAnimating || name.length === 0 ) {
+    public async focusBuilding(building: Object3D): Promise<boolean> {
+        if ( this.isAnimating ) {
             return false;
         }
-
         this.isAnimating = true;
-
         if ( !this.settings.advance.quality.postprocessing && this.selectedItem ) {
             ((this.selectedItem as Mesh).material as MeshStandardMaterial).color.set( this.colors.colorPalette.buildings.unchanged );
         }
+        this.selectedItem = building;
 
-        const mostLikelyItem = this.findModelFromName( name );
-        this.selectedItem = mostLikelyItem;
+        this.outlineObject( building );
+
+        if (this.settings.advance.map.noInteractions) {
+            this.isAnimating = false;
+            return true;
+        }
 
         /// ANIMATIONS ///
 
@@ -570,11 +575,13 @@ export class MapRenderer {
 
         // find positions and rotations
         const fromPos = camera.position.clone();
-        const toPos = mostLikelyItem.position.clone();
+        const toPos = building.position.clone();
+        const offsetX = 30 * this.globalScale;
+        const offsetY = 45 * this.globalScale;
         const toPosOffset = new Vector3(
-            fromPos.x - toPos.x > 0 ? toPos.x + 30 : toPos.x - 30,
-            toPos.y + 45,
-            fromPos.z - toPos.z > 0 ? toPos.z + 30 : toPos.z - 30
+            fromPos.x - toPos.x > 0 ? toPos.x + offsetX : toPos.x - offsetX,
+            toPos.y + offsetY,
+            fromPos.z - toPos.z > 0 ? toPos.z + offsetX : toPos.z - offsetX
         );
 
         const fromRot = camera.quaternion.clone();
@@ -592,7 +599,9 @@ export class MapRenderer {
             return true;
         }
 
-        this.outlineObject( mostLikelyItem );
+        if (this.settings.advance.map.noInteractions) {
+            return true;
+        }
 
         if ( this.settings.advance.camera.smooth ) {
             this.animate();
@@ -624,6 +633,16 @@ export class MapRenderer {
 
     }
 
+    // focus an object with name, returns is successful
+    public async focusBuildingByName( name: string ): Promise<boolean> {
+        if ( this.isAnimating || name.length === 0 ) {
+            return false;
+        }
+        const mostLikelyItem = this.findModelFromName( name );
+        this.selectedItem = mostLikelyItem;
+        return this.focusBuilding(mostLikelyItem);
+    }
+
     // find the most similar model from this.models base on their name
     private findModelFromName( name: string ): Object3D {
         name = name.toLowerCase();
@@ -645,8 +664,8 @@ export class MapRenderer {
         return filteredModels[maxIndex];
     }
 
-    private runAllFeatures(fn: (feature: Feature) => void) {
-        this.features.forEach(fn);
+    private runAllFeatures( fn: ( feature: Feature ) => void ) {
+        this.features.forEach( fn );
     }
 
     // CALLBACKS //
@@ -656,42 +675,42 @@ export class MapRenderer {
     }
 
     private callback_interaction__onMouseHover = ( building: Mesh, event: PointerEvent ) => {
-        if (this.isControlMoving) {
+        if ( this.isControlMoving ) {
             return;
         }
         this.hoverObject( building );
-        this.runAllFeatures(feature => feature.onHoverBuilding(building, event));
+        this.runAllFeatures( feature => feature.onHoverBuilding( building, event ) );
     }
 
     private callback_interaction__onMouseExit = ( building: Mesh, event: PointerEvent ) => {
         // have to unhover first
-        this.unhoverObject(building);
-        if (this.isControlMoving) {
+        this.unhoverObject( building );
+        if ( this.isControlMoving ) {
             return;
         }
-        this.runAllFeatures(feature => feature.onExitBuilding(building, event));
+        this.runAllFeatures( feature => feature.onExitBuilding( building, event ) );
     }
 
     private callback_interaction__onMouseClick = ( building: Mesh, event: PointerEvent ) => {
-        this.focusObject( building.name );
-        this.runAllFeatures(feature => feature.onClickBuilding(building, event));
+        this.focusBuilding( building );
+        this.runAllFeatures( feature => feature.onClickBuilding( building, event ) );
     }
 
     private callback_interaction__onMouseMove = ( building: Mesh, event: PointerEvent ) => {
-        if (this.isControlMoving) {
+        if ( this.isControlMoving ) {
             return;
         }
-        this.runAllFeatures(feature => feature.onMoveBuilding(building, event));
+        this.runAllFeatures( feature => feature.onMoveBuilding( building, event ) );
     }
 
     private callback_control_onstart = () => {
         this.isControlMoving = true;
-        this.runAllFeatures(feature => feature.onControlStart());
+        this.runAllFeatures( feature => feature.onControlStart() );
     }
 
     private callback_control_onend = () => {
         this.isControlMoving = false;
-        this.runAllFeatures(feature => feature.onControlEnd());
+        this.runAllFeatures( feature => feature.onControlEnd() );
     }
 }
 

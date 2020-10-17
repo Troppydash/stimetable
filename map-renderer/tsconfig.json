@@ -78,7 +78,7 @@
     "lib": [
       "dom",
       "es5",
-      "scripthost",
+      "es6",
       "es2015.promise",
       "es2015.collection"
     ]

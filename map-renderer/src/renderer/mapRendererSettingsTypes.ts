@@ -26,12 +26,16 @@ export interface AdvanceSettings {
     canvas: CanvasSettings,
     map: MapSettings,
     performance: PerformanceSettings,
-    features: FeaturesSettings,
+    lighting: LightingSettings
 }
 
-// Misc settings
-export interface FeaturesSettings {
+// Lighting settings
+export interface LightingSettings {
+    ambient: LightSettings
+}
 
+export interface LightSettings {
+    intensity: number
 }
 
 // Quality settings
@@ -44,14 +48,13 @@ export interface QualitySettings {
 // Camera settings
 export interface CameraSettings {
     smooth: boolean,
-    autoRotate: boolean,
-    autoRotateDelay: number,
 }
 
 // Canvas settings
 export interface CanvasSettings {
     size: CanvasSize,
     fixed: boolean,
+    globalScale: number,
 }
 
 // Performance settings
@@ -63,6 +66,7 @@ export interface PerformanceSettings {
 export interface MapSettings {
     timeDependedColors: { [key in keyof typeof TimeOfDay]: ColorPalette },
     timeDependedGetTimeOfDay: () => TimeOfDay,
+    noInteractions: boolean
 }
 
 // Color palette

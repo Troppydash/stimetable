@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { RecursivePartial } from "./typesHelpers";
-import { AdvanceSettings, ColorPalette, TimeOfDay } from "./mapRendererSettingsTypes";
+import { AdvanceSettings, ColorPalette, LightingSettings, TimeOfDay } from "./mapRendererSettingsTypes";
 
 /// default settings functions and variables ///
 export const defaultColors = {
@@ -78,8 +78,6 @@ export function CreateDefaultMapRendererSettingsFromQuality( quality: number ): 
             antialias: quality > 3,
         },
         camera: {
-            autoRotate: false,
-            autoRotateDelay: 0,
             smooth: true,
         },
         canvas: {
@@ -87,33 +85,57 @@ export function CreateDefaultMapRendererSettingsFromQuality( quality: number ): 
                 height: 1024,
                 width: 768,
             },
-            fixed: false
+            fixed: false,
+            globalScale: 1,
         },
         map: {
             timeDependedColors: defaultColors,
-            timeDependedGetTimeOfDay: defaultGetTimeOfDay
+            timeDependedGetTimeOfDay: defaultGetTimeOfDay,
+            noInteractions: false,
         },
         performance: {
             powerPreference: 'default'
         },
-        features: {}
+        lighting: {
+            ambient: {
+                intensity: 1
+            }
+        }
     }
+}
+
+// deep merge two objects
+// hopefully this works
+function deepAssign(target: any, ...sources: any) {
+    for (const source of sources) {
+        for (const k in source) {
+            let vs = source[k], vt = target[k]
+            if (Object(vs) == vs && Object(vt) === vt) {
+                target[k] = deepAssign(vt, vs)
+                continue
+            }
+            target[k] = source[k]
+        }
+    }
+    return target
 }
 
 // Merge two advance settings object together with s2 overriding s1
 export function MergeMapRendererSettings( s1: AdvanceSettings, s2: RecursivePartial<AdvanceSettings> ): AdvanceSettings {
-    return {
-        canvas: {
-            fixed: s2.canvas?.fixed || s1.canvas?.fixed,
-            size: { ...s1.canvas.size, ...s2.canvas?.size }
-        },
-        map: {
-            timeDependedGetTimeOfDay: s2.map?.timeDependedGetTimeOfDay ? s2.map?.timeDependedGetTimeOfDay as () => TimeOfDay : s1.map.timeDependedGetTimeOfDay,
-            timeDependedColors: s2.map?.timeDependedColors ? s2.map?.timeDependedColors as { [key in keyof typeof TimeOfDay]: ColorPalette } : s1.map.timeDependedColors,
-        },
-        camera: { ...s1.camera, ...s2.camera },
-        quality: { ...s1.quality, ...s2.quality },
-        performance: { ...s1.performance, ...s2.performance },
-        features: { ...s1.features, ...s2.features }
-    }
+    return deepAssign(s1, s2);
+    // return {
+    //     canvas: {
+    //         fixed: s2.canvas?.fixed || s1.canvas?.fixed,
+    //         size: { ...s1.canvas.size, ...s2.canvas?.size },
+    //         globalScale: s2.canvas?.globalScale || s1.canvas.globalScale,
+    //     },
+    //     map: {
+    //         timeDependedGetTimeOfDay: s2.map?.timeDependedGetTimeOfDay ? s2.map?.timeDependedGetTimeOfDay as () => TimeOfDay : s1.map.timeDependedGetTimeOfDay,
+    //         timeDependedColors: s2.map?.timeDependedColors ? s2.map?.timeDependedColors as { [key in keyof typeof TimeOfDay]: ColorPalette } : s1.map.timeDependedColors,
+    //     },
+    //     camera: { ...s1.camera, ...s2.camera },
+    //     quality: { ...s1.quality, ...s2.quality },
+    //     performance: { ...s1.performance, ...s2.performance },
+    //     lighting: { ...s1.lighting as LightingSettings, ...s2.lighting as LightingSettings }
+    // }
 }

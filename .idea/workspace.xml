@@ -20,14 +20,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f57e6297-dbb5-479f-8bdb-46ba43981d32" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/map-renderer/examples/test/public/test.gltf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/map-renderer/examples/test/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/examples/test/src/App.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/features/Feature.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/features/Feature.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/features/TestFeature.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/features/TestFeature.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/features/TooltipFeature.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/features/TooltipFeature.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/mapRenderer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/mapRenderer.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererSettingsTypes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererSettingsTypes.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,7 +56,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="dart.analysis.tool.window.visible" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../htmlProjects/testttt" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/map-renderer/examples/test/public" />
     <property name="nodejs_interpreter_path" value="D:/SoftwareDevelopmentKits/Node/Node12-16-3/node" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -80,7 +76,7 @@
       <recent name="E:\Folder2020\Projects\NpmProjects\stimetable\map-renderer\src\renderer" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.start">
+  <component name="RunManager" selected="npm.build-watch">
     <configuration name="build-watch" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/map-renderer/package.json" />
       <command value="run" />
@@ -113,8 +109,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.start" />
         <item itemvalue="npm.build-watch" />
+        <item itemvalue="npm.start" />
         <item itemvalue="npm.build" />
       </list>
     </recent_temporary>
@@ -136,7 +132,9 @@
       <workItem from="1602571656041" duration="5285000" />
       <workItem from="1602649185174" duration="7266000" />
       <workItem from="1602741775733" duration="4785000" />
-      <workItem from="1602826745949" duration="2242000" />
+      <workItem from="1602826745949" duration="3166000" />
+      <workItem from="1602880299021" duration="1270000" />
+      <workItem from="1602895269546" duration="299000" />
     </task>
     <task id="LOCAL-00001" summary="Scaffold">
       <created>1602206706104</created>
@@ -194,7 +192,14 @@
       <option name="project" value="LOCAL" />
       <updated>1602746521282</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="More Fixes">
+      <created>1602830865860</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1602830865860</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -222,7 +227,8 @@
     <MESSAGE value="Added onclick onhover onexit handlers to the mapRenderer" />
     <MESSAGE value="Added Features and improved highlighting" />
     <MESSAGE value="added Tooltip Feature" />
-    <option name="LAST_COMMIT_MESSAGE" value="added Tooltip Feature" />
+    <MESSAGE value="More Fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="More Fixes" />
   </component>
   <component name="WindowStateProjectService">
     <state x="765" y="236" key="#com.intellij.ide.util.MemberChooser" timestamp="1602829135657">
@@ -241,26 +247,26 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="745" y="221" key="Github.UntrackedFilesDialog/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602196610537" />
-    <state width="1901" height="370" key="GridCell.Tab.0.bottom" timestamp="1602829086076">
+    <state width="1901" height="370" key="GridCell.Tab.0.bottom" timestamp="1602832596150">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1901" height="370" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602829086076" />
-    <state width="1901" height="370" key="GridCell.Tab.0.center" timestamp="1602829086076">
+    <state width="1901" height="370" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602832596150" />
+    <state width="1901" height="370" key="GridCell.Tab.0.center" timestamp="1602832596150">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1901" height="370" key="GridCell.Tab.0.center/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602829086076" />
-    <state width="1901" height="370" key="GridCell.Tab.0.left" timestamp="1602829086076">
+    <state width="1901" height="370" key="GridCell.Tab.0.center/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602832596150" />
+    <state width="1901" height="370" key="GridCell.Tab.0.left" timestamp="1602832596150">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1901" height="370" key="GridCell.Tab.0.left/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602829086076" />
-    <state width="1901" height="370" key="GridCell.Tab.0.right" timestamp="1602829086076">
+    <state width="1901" height="370" key="GridCell.Tab.0.left/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602832596150" />
+    <state width="1901" height="370" key="GridCell.Tab.0.right" timestamp="1602832596150">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1901" height="370" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602829086076" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1602746523081">
+    <state width="1901" height="370" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602832596150" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1602830869357">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602746523081" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602830869357" />
     <state x="616" y="240" key="run.anything.popup" timestamp="1602829645233">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

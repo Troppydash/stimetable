@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import * as MapRenderer from "@stimetable/map-renderer";
 import { MapRendererBuilder, TimeOfDay } from "@stimetable/map-renderer/lib/renderer";
 import { TooltipFeature, Feature, PositionOffset, TestFeature } from "@stimetable/map-renderer/lib/renderer/features";
 import './App.css';
@@ -15,10 +14,16 @@ function App() {
         const mapBuilder = new MapRendererBuilder( {
             quality: 7,
             targetElement: document.getElementById( "map" )!,
-            gltfLocation: process.env.PUBLIC_URL + "scots.gltf"
+            gltfLocation: process.env.PUBLIC_URL + "test.gltf"
         }, {
             camera: {
                 smooth: true,
+
+            },
+            lighting: {
+                ambient: {
+                    intensity: 6
+                }
             },
             performance: {},
             quality: {
@@ -29,11 +34,13 @@ function App() {
                     height: 1024 / 16 * 9,
                     width: 1024,
                 },
+                globalScale: 0.1,
             },
             map: {
                 timeDependedGetTimeOfDay: function () {
-                    return TimeOfDay.night;
-                }
+                    return TimeOfDay.morning;
+                },
+                noInteractions: true,
             }
         } );
         mapBuilder.addFeature( new TooltipFeature(
@@ -46,6 +53,8 @@ function App() {
         ) );
         mapBuilder.addFeature(new TestFeature("Test"));
         setBuilder( mapBuilder );
+
+        mapBuilder.register();
 
 
         return () => {
@@ -69,7 +78,7 @@ function App() {
             }}>Full
             </button>
             <button onClick={async ( ev ) => {
-                console.log( await builder?.ref?.focusObject( 'mck13' ) );
+                console.log( await builder?.ref?.focusBuildingByName( 'mck13' ) );
             }}>
                 Select
             </button>
