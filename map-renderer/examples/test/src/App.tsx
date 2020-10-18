@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { MapRendererBuilder, TimeOfDay } from "@stimetable/map-renderer/lib/renderer";
-import { TooltipFeature, Feature, PositionOffset, TestFeature } from "@stimetable/map-renderer/lib/renderer/features";
+import {
+    TooltipFeature,
+    HighlightingFeature
+} from "@stimetable/map-renderer/lib/renderer/features";
+import { PositionOffset } from '@stimetable/map-renderer/lib/renderer/helpers';
 import './App.css';
 
 function App() {
@@ -10,37 +14,35 @@ function App() {
     const [ relPos, setRelPos ] = useState<PositionOffset>( { relX: 0, relY: 0 } );
 
     useEffect( () => {
-
+        const pp = true;
         const mapBuilder = new MapRendererBuilder( {
-            quality: 7,
+            quality: 8,
             targetElement: document.getElementById( "map" )!,
-            gltfLocation: process.env.PUBLIC_URL + "test.gltf"
-        }, {
+            gltfLocation: process.env.PUBLIC_URL + "scots.gltf"
+        },
+            {
             camera: {
                 smooth: true,
-
             },
             lighting: {
                 ambient: {
-                    intensity: 6
+                    intensity: 1
                 }
             },
-            performance: {},
             quality: {
-                postprocessing: true
+                postprocessing: pp
             },
             canvas: {
                 size: {
                     height: 1024 / 16 * 9,
                     width: 1024,
                 },
-                globalScale: 0.1,
+                globalScale: 1,
             },
             map: {
                 timeDependedGetTimeOfDay: function () {
-                    return TimeOfDay.morning;
+                    return TimeOfDay.night;
                 },
-                noInteractions: true,
             }
         } );
         mapBuilder.addFeature( new TooltipFeature(
@@ -51,18 +53,18 @@ function App() {
                 setRelPos( relativePosition );
             },
         ) );
-        mapBuilder.addFeature(new TestFeature("Test"));
+        // mapBuilder.addFeature(new TestFeature("Test"));
+        mapBuilder.addFeature(new HighlightingFeature({
+            postprocessing: pp,
+        }))
         setBuilder( mapBuilder );
 
         mapBuilder.register();
 
-
         return () => {
+            mapBuilder.dispose();
         }
     }, [] );
-
-
-
 
     return (
         <div>

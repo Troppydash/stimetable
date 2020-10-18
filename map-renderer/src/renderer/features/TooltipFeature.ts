@@ -1,19 +1,10 @@
 import { Feature } from "./Feature";
 import { CanvasSize, THREEObject } from "../typesHelpers";
-import { MapRendererRefs } from "../mapRenderer";
-
-export interface PositionOffset {
-    relX: number,
-    relY: number
-}
+import { MapRenderer, MapRendererRefs } from "../mapRenderer";
+import { ClientOffset, PageOffsetToRelOffset, PositionOffset } from "../helpers/coordHelpers";
 
 export interface TooltipSettings {
     delay: number,
-}
-
-interface ClientOffset {
-    clientX: number,
-    clientY: number,
 }
 
 export class TooltipFeature extends Feature {
@@ -68,30 +59,23 @@ export class TooltipFeature extends Feature {
     onTraverseChild( child: THREEObject ): void {
     }
 
-    runSetup( refs: MapRendererRefs ): void {
+    runSetup( refs: MapRendererRefs, mapRenderer: MapRenderer ): void {
         this.hideTooltip();
     }
 
     onMoveBuilding( building: THREEObject, event: PointerEvent ): void {
+        if (this.hoveredBuilding?.uuid !== building.uuid) {
+            this.onHoverBuilding(building, event);
+        }
         const clientOffset: ClientOffset = {
             clientX: event.clientX,
             clientY: event.clientY
         };
-        this.mostRecentLocation = this.pageOffsetToRelOffset( clientOffset );
+        this.mostRecentLocation = PageOffsetToRelOffset( this.parentElement, clientOffset );
     }
 
     runCleanup(): void {
         clearInterval(this.timeoutID);
-    }
-
-    private pageOffsetToRelOffset( clientOffset: ClientOffset ): PositionOffset {
-        const rect = this.parentElement.getBoundingClientRect();
-        const relX = clientOffset.clientX - rect.left;
-        const relY = clientOffset.clientY - rect.top;
-        return {
-            relX,
-            relY
-        }
     }
 
     private showTooltip( text: string, position: PositionOffset ) {
@@ -113,5 +97,8 @@ export class TooltipFeature extends Feature {
 
     onToggleFullscreen(isFullscreen: boolean): void {
         this.hideTooltip();
+    }
+
+    onFocusBuilding( newBuilding: THREEObject, oldBuilding?: THREEObject ): void {
     }
 }

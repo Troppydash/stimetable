@@ -20,10 +20,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f57e6297-dbb5-479f-8bdb-46ba43981d32" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/map-renderer/examples/test/public/test.gltf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/examples/test/public/newn1.gltf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/src/renderer/features/HighlightingFeature.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/src/renderer/helpers/coordHelpers.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/src/renderer/helpers/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/map-renderer/src/renderer/helpers/javasciptHelpers.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/map-renderer/examples/test/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/examples/test/src/App.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/features/Feature.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/features/Feature.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/features/TestFeature.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/features/TestFeature.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/features/TooltipFeature.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/features/TooltipFeature.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/features/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/features/index.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/mapRenderer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/mapRenderer.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererSettingsHelpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererSettingsHelpers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererSettingsTypes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/map-renderer/src/renderer/mapRendererSettingsTypes.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,14 +77,14 @@
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="E:\Folder2020\Projects\NpmProjects\stimetable\map-renderer\examples\test\public" />
-      <recent name="E:\Folder2020\Projects\NpmProjects\stimetable" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="E:\Folder2020\Projects\NpmProjects\stimetable\map-renderer\src\renderer\helpers" />
       <recent name="E:\Folder2020\Projects\NpmProjects\stimetable\map-renderer\example" />
       <recent name="E:\Folder2020\Projects\NpmProjects\stimetable\map-renderer\src\renderer" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\Folder2020\Projects\NpmProjects\stimetable\map-renderer\examples\test\public" />
+      <recent name="E:\Folder2020\Projects\NpmProjects\stimetable" />
     </key>
   </component>
   <component name="RunManager" selected="npm.build-watch">
@@ -134,7 +145,8 @@
       <workItem from="1602741775733" duration="4785000" />
       <workItem from="1602826745949" duration="3166000" />
       <workItem from="1602880299021" duration="1270000" />
-      <workItem from="1602895269546" duration="299000" />
+      <workItem from="1602895269546" duration="4859000" />
+      <workItem from="1602973566679" duration="10898000" />
     </task>
     <task id="LOCAL-00001" summary="Scaffold">
       <created>1602206706104</created>
@@ -199,7 +211,14 @@
       <option name="project" value="LOCAL" />
       <updated>1602830865860</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Added more settings like lighting and global scale">
+      <created>1602898508094</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1602898508094</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -228,13 +247,14 @@
     <MESSAGE value="Added Features and improved highlighting" />
     <MESSAGE value="added Tooltip Feature" />
     <MESSAGE value="More Fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="More Fixes" />
+    <MESSAGE value="Added more settings like lighting and global scale" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added more settings like lighting and global scale" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="765" y="236" key="#com.intellij.ide.util.MemberChooser" timestamp="1602829135657">
+    <state x="765" y="236" key="#com.intellij.ide.util.MemberChooser" timestamp="1602980685209">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="765" y="236" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602829135657" />
+    <state x="765" y="236" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602980685209" />
     <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1602652747089">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -247,26 +267,30 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="745" y="221" key="Github.UntrackedFilesDialog/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602196610537" />
-    <state width="1901" height="370" key="GridCell.Tab.0.bottom" timestamp="1602832596150">
+    <state width="1901" height="370" key="GridCell.Tab.0.bottom" timestamp="1602987736119">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1901" height="370" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602832596150" />
-    <state width="1901" height="370" key="GridCell.Tab.0.center" timestamp="1602832596150">
+    <state width="1901" height="370" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602987736119" />
+    <state width="1901" height="370" key="GridCell.Tab.0.center" timestamp="1602987736119">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1901" height="370" key="GridCell.Tab.0.center/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602832596150" />
-    <state width="1901" height="370" key="GridCell.Tab.0.left" timestamp="1602832596150">
+    <state width="1901" height="370" key="GridCell.Tab.0.center/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602987736119" />
+    <state width="1901" height="370" key="GridCell.Tab.0.left" timestamp="1602987736118">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1901" height="370" key="GridCell.Tab.0.left/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602832596150" />
-    <state width="1901" height="370" key="GridCell.Tab.0.right" timestamp="1602832596150">
+    <state width="1901" height="370" key="GridCell.Tab.0.left/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602987736118" />
+    <state width="1901" height="370" key="GridCell.Tab.0.right" timestamp="1602987736119">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1901" height="370" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602832596150" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1602830869357">
+    <state width="1901" height="370" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602987736119" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1602898509602">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602830869357" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602898509602" />
+    <state x="881" y="171" width="974" height="1028" key="dock-window-1" timestamp="1602984047272">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="881" y="171" width="974" height="1028" key="dock-window-1/0.0.1920.1040/1920.-123.960.1496@0.0.1920.1040" timestamp="1602984047272" />
     <state x="616" y="240" key="run.anything.popup" timestamp="1602829645233">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

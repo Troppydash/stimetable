@@ -17,6 +17,9 @@ import TWEEN from "@tweenjs/tween.js";
 import { CreatePositionTween, CreateRotationTween, IsVectorAlmostTheSame } from "./helpers/tweenHelper";
 import { Interaction } from 'three.interaction';
 import { Feature } from "./features";
+import { ClientOffset, PageOffsetToRelOffset } from "./helpers/coordHelpers";
+
+
 
 // refs for mapRenderer
 export interface MapRendererRefs {
@@ -26,8 +29,6 @@ export interface MapRendererRefs {
     renderer: THREE.WebGLRenderer,
 
     composer?: EffectComposer,
-    outlinePassSelected?: OutlinePass,
-    outlinePassHover?: OutlinePass,
     renderPass?: RenderPass,
     fxaaPass?: ShaderPass,
 }
@@ -52,7 +53,11 @@ export class MapRenderer {
         current: CanvasSize,
     };
 
-    private globalScale: number;
+    public get size() {
+        return this.canvasSize.current;
+    }
+
+    private readonly globalScale: number;
     /// END->BASIC FIELDS ///
 
     /// THREEJS FIELDS ///
@@ -191,31 +196,6 @@ export class MapRenderer {
                 const renderPass = this.track( new RenderPass( this.refs.scene, this.refs.camera ) );
                 composer.addPass( renderPass );
 
-                const params = {
-                    edgeStrength: 4.0,
-                    edgeGlow: 0.0,
-                    edgeThickness: 1,
-                    pulsePeriod: 0,
-                };
-                const outlinePass = this.track( new OutlinePass( new THREE.Vector2( size.width, size.height ), this.refs.scene, this.refs.camera ) );
-                composer.addPass( outlinePass );
-                outlinePass.edgeStrength = params.edgeStrength;
-                outlinePass.edgeGlow = params.edgeGlow;
-                outlinePass.edgeThickness = params.edgeThickness;
-                outlinePass.pulsePeriod = params.pulsePeriod;
-                outlinePass.visibleEdgeColor.set( colorPalette.buildings.selected );
-                outlinePass.hiddenEdgeColor.set( colorPalette.buildings.selected );
-
-                const outlinePassHover = this.track( new OutlinePass( new THREE.Vector2( size.width, size.height ), this.refs.scene, this.refs.camera ) );
-                composer.addPass( outlinePassHover );
-                outlinePassHover.edgeStrength = params.edgeStrength;
-                outlinePassHover.edgeGlow = params.edgeGlow;
-                outlinePassHover.edgeThickness = params.edgeThickness;
-                outlinePassHover.pulsePeriod = params.pulsePeriod;
-                outlinePassHover.visibleEdgeColor.set( colorPalette.buildings.hovered );
-                outlinePassHover.hiddenEdgeColor.set( colorPalette.buildings.hovered );
-
-
                 const fxaaPass = this.track( new ShaderPass( FXAAShader ) );
                 fxaaPass.uniforms['resolution'].value.set( 1 / size.width, 1 / size.height );
                 composer.addPass( fxaaPass );
@@ -224,8 +204,6 @@ export class MapRenderer {
                     ...this.refs,
                     composer,
                     renderPass,
-                    outlinePassSelected: outlinePass,
-                    outlinePassHover,
                     fxaaPass,
                 };
             }
@@ -298,7 +276,7 @@ export class MapRenderer {
 
         {
             this.runAllFeatures( (feature => {
-                feature.runSetup( this.refs );
+                feature.runSetup( this.refs, this );
             }) )
         }
 
@@ -381,7 +359,7 @@ export class MapRenderer {
 
     // load map into the canvas
     private loadMap() {
-        const { colorPalette, timeOfDay } = this.colors;
+        const { timeOfDay } = this.colors;
         const { shadow } = this.settings.advance.quality;
 
         return new Promise( ( resolve, reject ) => {
@@ -407,7 +385,7 @@ export class MapRenderer {
 
                         const building = child as THREE.Mesh;
                         const buildingMaterial = building.material as MeshStandardMaterial;
-                        buildingMaterial.color.set( colorPalette.buildings.unchanged );
+                        //buildingMaterial.color.set( colorPalette.buildings.unchanged );
                         (buildingMaterial.color as any).roughness = 1;
                         if ( shadow ) {
                             building.castShadow = true;
@@ -424,7 +402,19 @@ export class MapRenderer {
                             this.callback_interaction__onMouseExit( child, event.data.originalEvent as PointerEvent )
                         } );
                         interaction.on( 'mousemove', ( event: any ) => {
-                            this.callback_interaction__onMouseMove( child, event.data.originalEvent as PointerEvent )
+                            event = event.data.originalEvent;
+                            const clientOffset: ClientOffset = {
+                                clientX: event.clientX,
+                                clientY: event.clientY
+                            };
+                            const relOffset = PageOffsetToRelOffset(this.settings.basic.targetElement, clientOffset);
+                            if (relOffset.relX >= this.size.width || relOffset.relX <= 0) {
+                                return;
+                            }
+                            if (relOffset.relY >= this.size.height || relOffset.relY <= 0) {
+                                return;
+                            }
+                            this.callback_interaction__onMouseMove( child, event as PointerEvent )
                         } );
                         interaction.on( 'mousedown', ( event: any ) => {
                             const { screenX, screenY } = event.data.originalEvent;
@@ -501,68 +491,30 @@ export class MapRenderer {
     }
 
     // render scene
-    private render = () => {
+    public render = () => {
         const { renderer, scene, camera, composer } = this.refs;
         renderer.render( scene, camera );
         composer?.render();
     }
 
     // track an object for disposal later, acts as a proxy for this.resourceTracker
-    private track<T>( object: T ) {
+    public track<T>( object: T ) {
         return this.resourceTracker.track( object );
     }
 
     // OTHERS //
 
-    // outline an object
-    private outlineObject( building: Object3D ) {
-        if ( this.settings.advance.quality.postprocessing ) {
-            this.refs.outlinePassSelected!.selectedObjects = [ building ];
-            this.refs.outlinePassHover!.selectedObjects = [];
-        } else {
-            ((building as Mesh).material as MeshStandardMaterial).color.set( this.colors.colorPalette.buildings.selected );
-        }
-        this.render();
-    }
-
-    // unhover an object
-    private unhoverObject( building: Object3D ) {
-        if ( !building ) {
-            return;
-        }
-        if ( this.settings.advance.quality.postprocessing ) {
-            this.refs.outlinePassHover!.selectedObjects = this.refs.outlinePassHover!.selectedObjects.filter( obj => obj.name !== building.name );
-        } else {
-            ((building as Mesh).material as MeshStandardMaterial).color.set( this.colors.colorPalette.buildings.unchanged );
-        }
-        this.render();
-    }
-
-    // hover an object
-    private hoverObject( building: Object3D ) {
-        if ( building.name === this.selectedItem?.name ) {
-            return;
-        }
-
-        if ( this.settings.advance.quality.postprocessing ) {
-            this.refs.outlinePassHover!.selectedObjects = [ building ];
-        } else {
-            ((building as Mesh).material as MeshStandardMaterial).color.set( this.colors.colorPalette.buildings.hovered );
-        }
-        this.render();
-    }
-
     public async focusBuilding(building: Object3D): Promise<boolean> {
         if ( this.isAnimating ) {
             return false;
         }
-        this.isAnimating = true;
-        if ( !this.settings.advance.quality.postprocessing && this.selectedItem ) {
-            ((this.selectedItem as Mesh).material as MeshStandardMaterial).color.set( this.colors.colorPalette.buildings.unchanged );
+        if (this.selectedItem?.uuid === building.uuid) {
+            return true;
         }
-        this.selectedItem = building;
 
-        this.outlineObject( building );
+        this.isAnimating = true;
+        // this.runAllFeatures(feature => feature.onFocusBuilding(building, this.selectedItem));
+        this.selectedItem = building;
 
         if (this.settings.advance.map.noInteractions) {
             this.isAnimating = false;
@@ -639,7 +591,7 @@ export class MapRenderer {
             return false;
         }
         const mostLikelyItem = this.findModelFromName( name );
-        this.selectedItem = mostLikelyItem;
+        this.runAllFeatures(feature => feature.onFocusBuilding(mostLikelyItem, this.selectedItem));
         return this.focusBuilding(mostLikelyItem);
     }
 
@@ -678,13 +630,10 @@ export class MapRenderer {
         if ( this.isControlMoving ) {
             return;
         }
-        this.hoverObject( building );
         this.runAllFeatures( feature => feature.onHoverBuilding( building, event ) );
     }
 
     private callback_interaction__onMouseExit = ( building: Mesh, event: PointerEvent ) => {
-        // have to unhover first
-        this.unhoverObject( building );
         if ( this.isControlMoving ) {
             return;
         }
@@ -726,3 +675,5 @@ function modelNameMatchingPercent( name: string, modelName: string ): number {
 
     return maxNumber;
 }
+
+

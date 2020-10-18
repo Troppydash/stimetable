@@ -1,7 +1,9 @@
 import { CanvasSize, RecursivePartial } from "./typesHelpers";
+import { Light, Vector3 } from "three";
 
 // hex color type
 export type HexColor = string;
+export type Vector = Vector3;
 
 // time of day enum
 export enum TimeOfDay {
@@ -31,11 +33,17 @@ export interface AdvanceSettings {
 
 // Lighting settings
 export interface LightingSettings {
-    ambient: LightSettings
+    addDefaultLights: boolean,
+    ambient: LightSettings,
+    top: LightSettings,
+    sun: LightSettings;
+    sky: LightSettings;
 }
 
 export interface LightSettings {
-    intensity: number
+    intensity: number,
+    position: Vector,
+    targetPosition: Vector
 }
 
 // Quality settings
@@ -75,11 +83,5 @@ export interface ColorPalette {
     ambient: string;
     skylight: string;
     toplight: string;
-
-    buildings: {
-        unchanged: HexColor,
-        hovered: HexColor,
-        selected: HexColor,
-    },
 }
 

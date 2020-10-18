@@ -4,7 +4,11 @@ import {
 } from "./mapRendererSettingsTypes";
 import { RecursivePartial } from "./typesHelpers";
 import { MapRenderer } from "./mapRenderer";
-import { CreateDefaultMapRendererSettingsFromQuality, MergeMapRendererSettings } from "./mapRendererSettingsHelpers";
+import {
+    CreateDefaultMapRendererSettingsFromQuality,
+    DeepAssign,
+    MergeMapRendererSettings
+} from "./mapRendererSettingsHelpers";
 import { Feature } from "./features";
 
 // MapRenderer Builder class
@@ -38,6 +42,7 @@ export class MapRendererBuilder {
         if ( calcAs ) {
             mergedAS = MergeMapRendererSettings( mergedAS, calcAs );
         }
+
         this.settings = {
             basic,
             advance: mergedAS,

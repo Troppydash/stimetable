@@ -1,6 +1,6 @@
 import { Feature } from "./Feature";
 import { CanvasSize, THREEObject } from "../typesHelpers";
-import { MapRendererRefs } from "../mapRenderer";
+import { MapRenderer, MapRendererRefs } from "../mapRenderer";
 
 export class TestFeature extends Feature {
     constructor(private name: string) {
@@ -31,7 +31,7 @@ export class TestFeature extends Feature {
         this.log('onTraverseChild');
     }
 
-    runSetup( refs: MapRendererRefs ): void {
+    runSetup( refs: MapRendererRefs, mapRenderer: MapRenderer ): void {
         this.log('runSetup');
     }
 
@@ -53,6 +53,10 @@ export class TestFeature extends Feature {
 
     onToggleFullscreen( isFullscreen: boolean ): void {
         this.log('onToggleFullscreen');
+    }
+
+    onFocusBuilding( oldBuilding: THREEObject, newBuilding: THREEObject ): void {
+        this.log('onFocusBuilding');
     }
 
 }
