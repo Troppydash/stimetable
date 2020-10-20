@@ -11,13 +11,13 @@ import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { ResourceTracker } from "./helpers/resourceTracker";
-import { FullscreenHandler } from "./helpers/fullscreenHandler";
+import { ResourceTracker } from "../helpers/resourceTracker";
+import { FullscreenHandler } from "../helpers/fullscreenHandler";
 import TWEEN from "@tweenjs/tween.js";
-import { CreatePositionTween, CreateRotationTween, IsVectorAlmostTheSame } from "./helpers/tweenHelper";
+import { CreatePositionTween, CreateRotationTween, IsVectorAlmostTheSame } from "../helpers/tweenHelper";
 import { Interaction } from 'three.interaction';
-import { Feature } from "./features";
-import { ClientOffset, PageOffsetToRelOffset } from "./helpers/coordHelpers";
+import { Feature } from "../features";
+import { ClientOffset, PageOffsetToRelOffset } from "../helpers/coordHelpers";
 
 
 
@@ -336,7 +336,7 @@ export class MapRenderer {
     }
 
     // toggle canvas fullscreen
-    public toggleFullscreen = async () => {
+    public toggleFullscreen = async (newSize?: CanvasSize) => {
         if ( this.settings.advance.canvas.fixed ) {
             return;
         }
@@ -344,6 +344,9 @@ export class MapRenderer {
         this.runAllFeatures( feature => feature.onToggleFullscreen( !this.isFullscreen ) );
         if ( !this.isFullscreen ) {
             // fullscreen code goes here
+            if (newSize) {
+                this.canvasSize.current = newSize;
+            }
             this.canvasSize.old = this.canvasSize.current;
             await this.fullscreenHandler.openFullscreen();
             setTimeout( () => {
@@ -351,6 +354,9 @@ export class MapRenderer {
             }, 50 );
         } else {
             // un-fullscreen code goes here
+            if (newSize) {
+                this.canvasSize.old = newSize;
+            }
             this.canvasSize.current = this.canvasSize.old;
             await this.fullscreenHandler.closeFullscreen();
             this.resize( { width: this.canvasSize.current.width, height: this.canvasSize.current.height } );
@@ -508,11 +514,10 @@ export class MapRenderer {
         if ( this.isAnimating ) {
             return false;
         }
-        if (this.selectedItem?.uuid === building.uuid) {
-            return true;
-        }
+        // if (this.selectedItem?.uuid === building.uuid) {
+        //     return true;
+        // }
 
-        this.isAnimating = true;
         // this.runAllFeatures(feature => feature.onFocusBuilding(building, this.selectedItem));
         this.selectedItem = building;
 
@@ -520,6 +525,8 @@ export class MapRenderer {
             this.isAnimating = false;
             return true;
         }
+
+        this.isAnimating = true;
 
         /// ANIMATIONS ///
 
@@ -536,6 +543,12 @@ export class MapRenderer {
             fromPos.z - toPos.z > 0 ? toPos.z + offsetX : toPos.z - offsetX
         );
 
+        if ( IsVectorAlmostTheSame( controls.target, toPos ) && IsVectorAlmostTheSame( camera.position, toPosOffset ) ) {
+            this.isAnimating = false;
+            // console.log("stop");
+            return true;
+        }
+
         const fromRot = camera.quaternion.clone();
         const oldRot = fromRot.clone();
         const oldPos = fromPos.clone();
@@ -546,14 +559,6 @@ export class MapRenderer {
         camera.position.set( oldPos.x, oldPos.y, oldPos.z );
         camera.rotation.set( oldRot.x, oldRot.y, oldRot.z );
 
-        if ( IsVectorAlmostTheSame( controls.target, toPos ) && IsVectorAlmostTheSame( camera.position, toPosOffset ) ) {
-            this.isAnimating = false;
-            return true;
-        }
-
-        if (this.settings.advance.map.noInteractions) {
-            return true;
-        }
 
         if ( this.settings.advance.camera.smooth ) {
             this.animate();

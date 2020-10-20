@@ -3,8 +3,8 @@ import { MapRendererBuilder, TimeOfDay } from "@stimetable/map-renderer/lib/rend
 import {
     TooltipFeature,
     HighlightingFeature
-} from "@stimetable/map-renderer/lib/renderer/features";
-import { PositionOffset } from '@stimetable/map-renderer/lib/renderer/helpers';
+} from "@stimetable/map-renderer/lib/features";
+import { PositionOffset } from '@stimetable/map-renderer/lib/helpers';
 import './App.css';
 
 function App() {
@@ -41,7 +41,7 @@ function App() {
             },
             map: {
                 timeDependedGetTimeOfDay: function () {
-                    return TimeOfDay.night;
+                    return TimeOfDay.afternoon;
                 },
             }
         } );
@@ -78,6 +78,10 @@ function App() {
             <button onClick={( ev ) => {
                 builder?.ref?.toggleFullscreen();
             }}>Full
+            </button>
+            <button onClick={( ev ) => {
+                builder?.ref?.toggleFullscreen({width: 300, height: 300});
+            }}>UnFull
             </button>
             <button onClick={async ( ev ) => {
                 console.log( await builder?.ref?.focusBuildingByName( 'mck13' ) );

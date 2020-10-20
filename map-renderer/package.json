@@ -1,6 +1,6 @@
 {
   "name": "@stimetable/map-renderer",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "MapRenderer repo for the stimetable website",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

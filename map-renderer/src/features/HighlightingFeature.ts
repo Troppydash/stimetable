@@ -1,10 +1,10 @@
 import { Feature } from "./Feature";
-import { CanvasSize, RecursivePartial, THREEObject } from "../typesHelpers";
-import { MapRenderer, MapRendererRefs } from "../mapRenderer";
-import { HexColor } from "../mapRendererSettingsTypes";
+import { CanvasSize, RecursivePartial, THREEObject } from "../renderer/typesHelpers";
+import { MapRenderer, MapRendererRefs } from "../renderer/mapRenderer";
+import { HexColor } from "../renderer/mapRendererSettingsTypes";
 import { Mesh, MeshStandardMaterial, Object3D } from "three";
 import * as THREE from "three";
-import { DeepAssign } from "../mapRendererSettingsHelpers";
+import { DeepAssign } from "../renderer/mapRendererSettingsHelpers";
 import { OutlinePass } from "three/examples/jsm/postprocessing/OutlinePass";
 
 export interface HighlightingFeatureSettings {

@@ -1,6 +1,6 @@
 import { Feature } from "./Feature";
-import { CanvasSize, THREEObject } from "../typesHelpers";
-import { MapRenderer, MapRendererRefs } from "../mapRenderer";
+import { CanvasSize, THREEObject } from "../renderer/typesHelpers";
+import { MapRenderer, MapRendererRefs } from "../renderer/mapRenderer";
 
 export class TestFeature extends Feature {
     constructor(private name: string) {

@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { RecursivePartial } from "./typesHelpers";
 import { AdvanceSettings, ColorPalette, LightingSettings, TimeOfDay } from "./mapRendererSettingsTypes";
 import { Vector3 } from "three";
-import { isFunction, isObject } from "./helpers/javasciptHelpers";
+import { isFunction, isObject } from "../helpers/javasciptHelpers";
 
 /// default settings functions and variables ///
 export const defaultColors = {

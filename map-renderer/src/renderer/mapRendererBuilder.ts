@@ -9,7 +9,7 @@ import {
     DeepAssign,
     MergeMapRendererSettings
 } from "./mapRendererSettingsHelpers";
-import { Feature } from "./features";
+import { Feature } from "../features";
 
 // MapRenderer Builder class
 export class MapRendererBuilder {
