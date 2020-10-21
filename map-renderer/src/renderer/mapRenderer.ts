@@ -6,7 +6,6 @@ import { AdvanceSettings, BasicSettings, ColorPalette, TimeOfDay } from "./mapRe
 import { CanvasSize } from "./typesHelpers";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
-import { OutlinePass } from "three/examples/jsm/postprocessing/OutlinePass";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader";
@@ -39,7 +38,7 @@ export class MapRenderer {
     /// BASIC FIELDS ///
 
     // mapRenderer settings object containing basic and advance settings
-    private readonly settings: {
+    public readonly settings: {
         basic: BasicSettings,
         advance: AdvanceSettings
     };

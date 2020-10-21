@@ -83,5 +83,5 @@
       "es2015.collection"
     ]
   },
-  "exclude": ["examples", "lib"]
+  "exclude": ["examples", "lib", "**/tests/*.*"]
 }

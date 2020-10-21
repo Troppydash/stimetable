@@ -1,7 +1,7 @@
 import { Feature } from "./Feature";
-import { CanvasSize, THREEObject } from "../renderer/typesHelpers";
+import { CanvasSize, THREEObject } from "../renderer";
 import { MapRenderer, MapRendererRefs } from "../renderer/mapRenderer";
-import { ClientOffset, PageOffsetToRelOffset, PositionOffset } from "../helpers/coordHelpers";
+import { ClientOffset, PageOffsetToRelOffset, PositionOffset } from "../helpers";
 
 export interface TooltipSettings {
     delay: number,
@@ -9,7 +9,7 @@ export interface TooltipSettings {
 
 export class TooltipFeature extends Feature {
 
-    private timeoutID: number = -1;
+    private timeoutID?: NodeJS.Timeout;
 
     private hoveredBuilding?: THREEObject;
 
@@ -39,14 +39,14 @@ export class TooltipFeature extends Feature {
     onExitBuilding( building: THREEObject, event: PointerEvent ): void {
         if (building.name === this.hoveredBuilding?.name) {
             this.hideTooltip();
-            clearTimeout( this.timeoutID );
+            this.timeoutID && clearTimeout( this.timeoutID );
         }
     }
 
     onHoverBuilding( building: THREEObject, event: PointerEvent ): void {
         this.hoveredBuilding = building;
         this.hideTooltip();
-        clearTimeout( this.timeoutID );
+        this.timeoutID && clearTimeout( this.timeoutID );
         this.timeoutID = setTimeout( () => {
             this.showTooltip( building.name.split('_').join(' '), this.mostRecentLocation );
         }, this.settings.delay );
@@ -75,7 +75,7 @@ export class TooltipFeature extends Feature {
     }
 
     runCleanup(): void {
-        clearInterval(this.timeoutID);
+        this.timeoutID && clearInterval(this.timeoutID);
     }
 
     private showTooltip( text: string, position: PositionOffset ) {
@@ -90,7 +90,7 @@ export class TooltipFeature extends Feature {
     }
 
     onControlStart(): void {
-        clearTimeout(this.timeoutID);
+        this.timeoutID && clearTimeout(this.timeoutID);
         this.hideTooltip();
         this.hoveredBuilding = undefined;
     }
