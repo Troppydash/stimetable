@@ -43,6 +43,10 @@ export class MapRenderer {
         advance: AdvanceSettings
     };
 
+    public get targetElement() {
+        return this.settings.basic.targetElement;
+    }
+
     // refs for all important elements
     private readonly refs: MapRendererRefs;
 

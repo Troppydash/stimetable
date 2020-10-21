@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { MapRendererBuilder, TimeOfDay } from "@stimetable/map-renderer/lib/renderer";
 import {
     TooltipFeature,
-    HighlightingFeature
+    HighlightingFeature, AutoresizeFeature, CallbackFeature
 } from "@stimetable/map-renderer/lib/features";
 import { PositionOffset } from '@stimetable/map-renderer/lib/helpers';
 import './App.css';
@@ -46,17 +46,22 @@ function App() {
             }
         } );
         mapBuilder.addFeature( new TooltipFeature(
-            document.getElementById( "map" )!,
             document.getElementById( 'map-tooltip' )!,
             ( newText: string, relativePosition: PositionOffset ) => {
                 setTooltipText( newText );
                 setRelPos( relativePosition );
             },
         ) );
-        // mapBuilder.addFeature(new TestFeature("Test"));
         mapBuilder.addFeature(new HighlightingFeature({
             postprocessing: pp,
         }))
+        // mapBuilder.addFeature(new AutoresizeFeature(() => window.innerWidth));
+        mapBuilder.addFeature(new CallbackFeature([{
+            method: 'onToggleFullscreen',
+            callback: (args: any) => {
+                console.log(args);
+            }
+        }]))
         setBuilder( mapBuilder );
 
         mapBuilder.register();
@@ -76,15 +81,15 @@ function App() {
                 builder?.dispose();
             }}>dispose</button>
             <button onClick={( ev ) => {
-                builder?.ref?.toggleFullscreen();
+                builder?.instance?.toggleFullscreen();
             }}>Full
             </button>
             <button onClick={( ev ) => {
-                builder?.ref?.toggleFullscreen({width: 300, height: 300});
+                builder?.instance?.toggleFullscreen({width: 300, height: 300});
             }}>UnFull
             </button>
             <button onClick={async ( ev ) => {
-                console.log( await builder?.ref?.focusBuildingByName( 'mck13' ) );
+                console.log( await builder?.instance?.focusBuildingByName( 'mck13' ) );
             }}>
                 Select
             </button>

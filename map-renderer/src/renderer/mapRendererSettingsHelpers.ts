@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { RecursivePartial } from "./typesHelpers";
 import { AdvanceSettings, ColorPalette, LightingSettings, TimeOfDay } from "./mapRendererSettingsTypes";
 import { Vector3 } from "three";
-import { isFunction, isObject } from "../helpers/javasciptHelpers";
+import { isFunction, isObject, isNotDefined, isUndefined } from "../helpers/javasciptHelpers";
 
 /// default settings functions and variables ///
 export const defaultColors = {
@@ -124,6 +124,9 @@ export function DeepAssign( target: any, ...sources: any) {
     for (const source of sources) {
         for (const k in source) {
             let vs = source[k], vt = target[k]
+            if (isUndefined(vs)) {
+                continue;
+            }
             if (isObject(vs) && isObject(vt)) {
                 target[k] = DeepAssign(vt, vs)
                 continue

@@ -27,3 +27,17 @@ export abstract class Feature {
 
     abstract onFocusBuilding( newBuilding: THREEObject, oldBuilding?: THREEObject ): void;
 }
+
+export type FeatureMethods =
+    "runSetup"
+    | "runCleanup"
+    | "onTraverseChild"
+    | "onHoverBuilding"
+    | "onClickBuilding"
+    | "onMoveBuilding"
+    | "onExitBuilding"
+    | "onControlStart"
+    | "onControlEnd"
+    | "onResizeCanvas"
+    | "onToggleFullscreen"
+    | "onFocusBuilding";

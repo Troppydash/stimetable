@@ -19,7 +19,10 @@ export class MapRendererBuilder {
         advance: AdvanceSettings
     }
 
-    public ref?: MapRenderer;
+    private _instance?: MapRenderer;
+    public get instance() {
+        return this._instance;
+    }
 
     private features: Feature[] = [];
 
@@ -56,17 +59,17 @@ export class MapRendererBuilder {
 
     // registers the mapRenderer, this calls loadMap
     public register(): MapRenderer {
-        if (this.ref) {
+        if (this._instance) {
             this.dispose();
         }
-        this.ref = new MapRenderer( this.settings.basic, this.settings.advance, this.features );
-        return this.ref;
+        this._instance = new MapRenderer( this.settings.basic, this.settings.advance, this.features );
+        return this._instance;
     }
 
     // dispose the mapRenderer and removes its content
     public dispose() {
-        this.ref?.dispose();
-        this.ref = undefined;
+        this._instance?.dispose();
+        this._instance = undefined;
     }
 
 }

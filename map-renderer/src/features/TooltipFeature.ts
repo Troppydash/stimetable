@@ -24,8 +24,9 @@ export class TooltipFeature extends Feature {
         relX: -1
     }
 
+    private targetElement!: HTMLElement;
+
     constructor(
-        private parentElement: HTMLElement,
         private tooltipElement: HTMLElement,
         private setTooltip: ( newText: string, relativePosition: PositionOffset ) => void,
         private settings: TooltipSettings = TooltipFeature.defaultSettings
@@ -61,6 +62,7 @@ export class TooltipFeature extends Feature {
 
     runSetup( refs: MapRendererRefs, mapRenderer: MapRenderer ): void {
         this.hideTooltip();
+        this.targetElement = mapRenderer.targetElement;
     }
 
     onMoveBuilding( building: THREEObject, event: PointerEvent ): void {
@@ -71,7 +73,7 @@ export class TooltipFeature extends Feature {
             clientX: event.clientX,
             clientY: event.clientY
         };
-        this.mostRecentLocation = PageOffsetToRelOffset( this.parentElement, clientOffset );
+        this.mostRecentLocation = PageOffsetToRelOffset( this.targetElement, clientOffset );
     }
 
     runCleanup(): void {
