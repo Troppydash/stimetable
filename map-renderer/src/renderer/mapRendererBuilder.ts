@@ -14,7 +14,7 @@ import { Feature } from "../features";
 // MapRenderer Builder class
 export class MapRendererBuilder {
     // mapRenderer settings object containing basic and advance settings
-    private readonly settings: {
+    public readonly settings: {
         basic: BasicSettings,
         advance: AdvanceSettings
     }
@@ -30,14 +30,13 @@ export class MapRendererBuilder {
 
         const paramAS = advanceSettings;
         const defaultAS = CreateDefaultMapRendererSettingsFromQuality( basic.quality );
-        let calcAs;
-        if ( basic.createSettingsFromQuality ) {
-            calcAs = basic.createSettingsFromQuality( basic.quality );
-        }
-
         let mergedAS = defaultAS;
         if ( paramAS ) {
             mergedAS = MergeMapRendererSettings( mergedAS, paramAS );
+        }
+        let calcAs;
+        if ( basic.createSettings ) {
+            calcAs = basic.createSettings( basic.quality, mergedAS );
         }
         if ( calcAs ) {
             mergedAS = MergeMapRendererSettings( mergedAS, calcAs );

@@ -18,7 +18,7 @@ export interface BasicSettings {
     quality: number,
     targetElement: HTMLElement,
     gltfLocation: string,
-    createSettingsFromQuality?: ( quality: number ) => RecursivePartial<AdvanceSettings>,
+    createSettings?: ( quality: number, existingSettings?: RecursivePartial<AdvanceSettings> ) => RecursivePartial<AdvanceSettings>,
 }
 
 // Advance settings

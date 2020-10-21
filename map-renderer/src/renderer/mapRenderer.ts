@@ -16,7 +16,7 @@ import TWEEN from "@tweenjs/tween.js";
 import { CreatePositionTween, CreateRotationTween, IsVectorAlmostTheSame } from "../helpers/tweenHelper";
 import { Interaction } from 'three.interaction';
 import { Feature } from "../features";
-import { ClientOffset, PageOffsetToRelOffset } from "../helpers/coordHelpers";
+import { ClientOffset, PageOffsetToRelOffset } from "../helpers";
 
 
 

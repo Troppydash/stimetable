@@ -4,3 +4,5 @@ fs.rmdir("./lib", { recursive: true }, (err) => {
         console.error(err);
     }
 });
+
+console.log('Done');
