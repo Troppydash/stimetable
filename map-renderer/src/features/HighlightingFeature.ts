@@ -38,14 +38,10 @@ export class HighlightingFeature extends Feature {
     private outlinePassSelected!: OutlinePass;
     private outlinePassHover!: OutlinePass;
 
-    constructor( settings?: RecursivePartial<HighlightingFeatureSettings> ) {
+    constructor( settings: RecursivePartial<HighlightingFeatureSettings> = HighlightingFeature.defaultSettings ) {
         super();
 
-        const defaultSettings = HighlightingFeature.defaultSettings;
-        if ( settings ) {
-            settings = DeepAssign( defaultSettings, settings );
-        }
-        this.settings = settings as HighlightingFeatureSettings;
+        this.settings = DeepAssign(HighlightingFeature.defaultSettings, settings);
     }
 
     private setColor( building: Object3D | undefined, color: HexColor ) {

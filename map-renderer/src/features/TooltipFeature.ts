@@ -1,7 +1,9 @@
 import { Feature } from "./Feature";
-import { CanvasSize, THREEObject } from "../renderer";
+import { CanvasSize, RecursivePartial, THREEObject } from "../renderer";
 import { MapRenderer, MapRendererRefs } from "../renderer/mapRenderer";
 import { ClientOffset, PageOffsetToRelOffset, PositionOffset } from "../helpers";
+import { DeepAssign } from "../renderer/mapRendererSettingsHelpers";
+import set = Reflect.set;
 
 export interface TooltipSettings {
     delay: number,
@@ -26,12 +28,16 @@ export class TooltipFeature extends Feature {
 
     private targetElement!: HTMLElement;
 
+    private settings: TooltipSettings;
+
     constructor(
         private tooltipElement: HTMLElement,
         private setTooltip: ( newText: string, relativePosition: PositionOffset ) => void,
-        private settings: TooltipSettings = TooltipFeature.defaultSettings
+        settings: RecursivePartial<TooltipSettings> = TooltipFeature.defaultSettings
     ) {
         super();
+
+        this.settings = DeepAssign(TooltipFeature.defaultSettings, settings);
     }
 
     onClickBuilding( building: THREEObject, event: PointerEvent ): void {

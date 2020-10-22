@@ -18,7 +18,7 @@ export interface BasicSettings {
     quality: number,
     targetElement: HTMLElement,
     gltfLocation: string,
-    createSettings?: ( quality: number, existingSettings?: RecursivePartial<AdvanceSettings> ) => RecursivePartial<AdvanceSettings>,
+    createSettings?: ( quality: number, existingSettings?: PartialAdvanceSettings ) => PartialAdvanceSettings,
 }
 
 // Advance settings
@@ -28,7 +28,27 @@ export interface AdvanceSettings {
     canvas: CanvasSettings,
     map: MapSettings,
     performance: PerformanceSettings,
-    lighting: LightingSettings
+    lighting: LightingSettings,
+    misc: MiscSettings,
+}
+
+export type PartialAdvanceSettings = RecursivePartial<AdvanceSettings>;
+
+export enum LoggingLevels {
+    // logs none
+    none,
+    // logs error only
+    error,
+    // logs warning and errors
+    warning,
+    // logs general info
+    info,
+    // logs debug information
+    debug,
+}
+
+export interface MiscSettings {
+    logging: LoggingLevels
 }
 
 // Lighting settings

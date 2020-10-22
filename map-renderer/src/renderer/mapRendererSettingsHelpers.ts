@@ -1,8 +1,7 @@
 import dayjs from "dayjs";
-import { RecursivePartial } from "./typesHelpers";
-import { AdvanceSettings, ColorPalette, LightingSettings, TimeOfDay } from "./mapRendererSettingsTypes";
+import { AdvanceSettings, LoggingLevels, PartialAdvanceSettings, TimeOfDay } from "./mapRendererSettingsTypes";
 import { Vector3 } from "three";
-import { isFunction, isObject, isNotDefined, isUndefined } from "../helpers/javasciptHelpers";
+import { isObject, isUndefined } from "../helpers/javasciptHelpers";
 
 /// default settings functions and variables ///
 export const defaultColors = {
@@ -114,6 +113,9 @@ export function CreateDefaultMapRendererSettingsFromQuality( quality: number ): 
                 position: new Vector3(),
                 targetPosition: new Vector3(),
             },
+        },
+        misc: {
+            logging: LoggingLevels.warning
         }
     }
 }
@@ -138,6 +140,6 @@ export function DeepAssign( target: any, ...sources: any) {
 }
 
 // Merge two advance settings object together with s2 overriding s1
-export function MergeMapRendererSettings( s1: AdvanceSettings, s2: RecursivePartial<AdvanceSettings> ): AdvanceSettings {
+export function MergeMapRendererSettings( s1: AdvanceSettings, s2: PartialAdvanceSettings ): AdvanceSettings {
     return DeepAssign(s1, s2);
 }

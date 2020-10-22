@@ -1,6 +1,13 @@
 import { Feature } from "./Feature";
-import { CanvasSize, THREEObject } from "../renderer";
+import { CanvasSize, RecursivePartial, THREEObject } from "../renderer";
 import { MapRenderer, MapRendererRefs } from "../renderer/mapRenderer";
+import { DeepAssign } from "../renderer/mapRendererSettingsHelpers";
+import set = Reflect.set;
+
+export interface AutoresizeFeatureSettings {
+    getWidth: ( self: AutoresizeFeature ) => number,
+    watchWindow: boolean
+}
 
 export class AutoresizeFeature extends Feature {
     private _refs!: MapRendererRefs;
@@ -13,8 +20,19 @@ export class AutoresizeFeature extends Feature {
         return this._mapRenderer;
     }
 
-    constructor( private getWidth: ( self: AutoresizeFeature ) => number, private aspectRatio = 16 / 9 ) {
+    static defaultSettings: AutoresizeFeatureSettings = {
+        getWidth: () => window.innerWidth,
+        watchWindow: true,
+    }
+
+    private settings: AutoresizeFeatureSettings;
+
+    constructor(
+        settings: RecursivePartial<AutoresizeFeatureSettings> = AutoresizeFeature.defaultSettings,
+        private aspectRatio = 16 / 9
+    ) {
         super();
+        this.settings = DeepAssign(AutoresizeFeature.defaultSettings, settings);
     }
 
     onClickBuilding( building: THREEObject, event: PointerEvent ): void {
@@ -48,11 +66,13 @@ export class AutoresizeFeature extends Feature {
     }
 
     runCleanup(): void {
-        window.removeEventListener('resize' , this.autoresize);
+        if ( this.settings.watchWindow ) {
+            window.removeEventListener( 'resize', this.autoresize );
+        }
     }
 
-    private autoresize = () => {
-        const width = this.getWidth(this);
+    public autoresize = () => {
+        const width = this.settings.getWidth( this );
         this.mapRenderer.resize( {
             width,
             height: width / this.aspectRatio
@@ -62,7 +82,10 @@ export class AutoresizeFeature extends Feature {
     runSetup( refs: MapRendererRefs, mapRenderer: MapRenderer ): void {
         this._refs = refs;
         this._mapRenderer = mapRenderer;
-        window.addEventListener( 'resize', this.autoresize );
+        if ( this.settings.watchWindow ) {
+            window.addEventListener( 'resize', this.autoresize );
+            this.autoresize();
+        }
     }
 
 }

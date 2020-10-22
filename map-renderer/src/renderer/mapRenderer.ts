@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { Mesh, MeshStandardMaterial, Object3D, Quaternion, Vector3 } from 'three';
 import * as similarity from 'string-similarity';
 
-import { AdvanceSettings, BasicSettings, ColorPalette, TimeOfDay } from "./mapRendererSettingsTypes";
+import { AdvanceSettings, BasicSettings, ColorPalette, LoggingLevels, TimeOfDay } from "./mapRendererSettingsTypes";
 import { CanvasSize } from "./typesHelpers";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
@@ -17,7 +17,7 @@ import { CreatePositionTween, CreateRotationTween, IsVectorAlmostTheSame } from 
 import { Interaction } from 'three.interaction';
 import { Feature } from "../features";
 import { ClientOffset, PageOffsetToRelOffset } from "../helpers";
-
+import { isNotDefined } from "../helpers/javasciptHelpers";
 
 
 // refs for mapRenderer
@@ -119,7 +119,8 @@ export class MapRenderer {
         }
         this.globalScale = advance.canvas.globalScale;
         this.features = features;
-        console.debug( this.settings );
+
+        this.logMessage( 'constructor', 'Settings', this.settings, LoggingLevels.info );
 
         // SETUP //
 
@@ -241,7 +242,7 @@ export class MapRenderer {
 
             // Side light
             const sidelight = this.track( new THREE.DirectionalLight( colorPalette.sunlight, 3 ) );
-            sidelight.position.set( 100 * this.globalScale, 140 * this.globalScale, 240 * this.globalScale);
+            sidelight.position.set( 100 * this.globalScale, 140 * this.globalScale, 240 * this.globalScale );
             sidelight.target.position.set( 30 * this.globalScale, 0, 0, );
 
             if ( shadow ) {
@@ -285,15 +286,41 @@ export class MapRenderer {
 
         this.models = [];
         this.render();
+        this.logMessage('constructor', 'Hello World', undefined, LoggingLevels.info);
 
         this.loadMap()
             .then( () => {
                 this.render();
-                console.debug( this );
+                this.logMessage('constructor.loadMap', 'Success', this, LoggingLevels.info);
             } )
             .catch( err => {
-                console.error( err );
+                this.logMessage('constructor.loadMap', 'Error', err, LoggingLevels.error);
             } );
+    }
+
+    private logMessage( method: string, message: string, obj: any, level: LoggingLevels = LoggingLevels.debug ) {
+        if ( level <= this.settings.advance.misc.logging ) {
+            const msg = `[${LoggingLevels[level].toUpperCase()}] MapRenderer.${method}: ${message}`;
+            switch ( level ) {
+                case LoggingLevels.none:
+                    break;
+                case LoggingLevels.debug:
+                    console.log( msg );
+                    break;
+                case LoggingLevels.warning:
+                    console.warn( msg );
+                    break;
+                case LoggingLevels.info:
+                    console.log( msg );
+                    break;
+                case LoggingLevels.error:
+                    console.error( msg );
+                    break;
+            }
+            if (this.settings.advance.misc.logging == LoggingLevels.debug && !isNotDefined(obj)) {
+                console.log(obj);
+            }
+        }
     }
 
     // dispose the mapRenderer and removes its content
@@ -312,6 +339,7 @@ export class MapRenderer {
 
         this.unbindAllCallbacks();
         this.runAllFeatures( feature => feature.runCleanup() );
+        this.logMessage('dispose', 'Disposed World', undefined, LoggingLevels.info);
     }
 
 
@@ -339,7 +367,7 @@ export class MapRenderer {
     }
 
     // toggle canvas fullscreen
-    public toggleFullscreen = async (newSize?: CanvasSize) => {
+    public toggleFullscreen = async ( newSize?: CanvasSize ) => {
         if ( this.settings.advance.canvas.fixed ) {
             return;
         }
@@ -347,7 +375,7 @@ export class MapRenderer {
         this.runAllFeatures( feature => feature.onToggleFullscreen( !this.isFullscreen ) );
         if ( !this.isFullscreen ) {
             // fullscreen code goes here
-            if (newSize) {
+            if ( newSize ) {
                 this.canvasSize.current = newSize;
             }
             this.canvasSize.old = this.canvasSize.current;
@@ -357,7 +385,7 @@ export class MapRenderer {
             }, 50 );
         } else {
             // un-fullscreen code goes here
-            if (newSize) {
+            if ( newSize ) {
                 this.canvasSize.old = newSize;
             }
             this.canvasSize.current = this.canvasSize.old;
@@ -416,11 +444,11 @@ export class MapRenderer {
                                 clientX: event.clientX,
                                 clientY: event.clientY
                             };
-                            const relOffset = PageOffsetToRelOffset(this.settings.basic.targetElement, clientOffset);
-                            if (relOffset.relX >= this.size.width || relOffset.relX <= 0) {
+                            const relOffset = PageOffsetToRelOffset( this.settings.basic.targetElement, clientOffset );
+                            if ( relOffset.relX >= this.size.width || relOffset.relX <= 0 ) {
                                 return;
                             }
-                            if (relOffset.relY >= this.size.height || relOffset.relY <= 0) {
+                            if ( relOffset.relY >= this.size.height || relOffset.relY <= 0 ) {
                                 return;
                             }
                             this.callback_interaction__onMouseMove( child, event as PointerEvent )
@@ -513,7 +541,7 @@ export class MapRenderer {
 
     // OTHERS //
 
-    public async focusBuilding(building: Object3D): Promise<boolean> {
+    public async focusBuilding( building: Object3D ): Promise<boolean> {
         if ( this.isAnimating ) {
             return false;
         }
@@ -524,7 +552,7 @@ export class MapRenderer {
         // this.runAllFeatures(feature => feature.onFocusBuilding(building, this.selectedItem));
         this.selectedItem = building;
 
-        if (this.settings.advance.map.noInteractions) {
+        if ( this.settings.advance.map.noInteractions ) {
             this.isAnimating = false;
             return true;
         }
@@ -548,7 +576,6 @@ export class MapRenderer {
 
         if ( IsVectorAlmostTheSame( controls.target, toPos ) && IsVectorAlmostTheSame( camera.position, toPosOffset ) ) {
             this.isAnimating = false;
-            // console.log("stop");
             return true;
         }
 
@@ -599,8 +626,8 @@ export class MapRenderer {
             return false;
         }
         const mostLikelyItem = this.findModelFromName( name );
-        this.runAllFeatures(feature => feature.onFocusBuilding(mostLikelyItem, this.selectedItem));
-        return this.focusBuilding(mostLikelyItem);
+        this.runAllFeatures( feature => feature.onFocusBuilding( mostLikelyItem, this.selectedItem ) );
+        return this.focusBuilding( mostLikelyItem );
     }
 
     // find the most similar model from this.models base on their name

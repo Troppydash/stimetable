@@ -1,12 +1,10 @@
 import {
     AdvanceSettings,
-    BasicSettings,
+    BasicSettings, PartialAdvanceSettings,
 } from "./mapRendererSettingsTypes";
-import { RecursivePartial } from "./typesHelpers";
 import { MapRenderer } from "./mapRenderer";
 import {
     CreateDefaultMapRendererSettingsFromQuality,
-    DeepAssign,
     MergeMapRendererSettings
 } from "./mapRendererSettingsHelpers";
 import { Feature } from "../features";
@@ -27,9 +25,9 @@ export class MapRendererBuilder {
     private features: Feature[] = [];
 
     // constructor with settings as parameters
-    constructor( basicSettings: BasicSettings, advanceSettings?: RecursivePartial<AdvanceSettings> ) {
+    constructor( basicSettings: BasicSettings, advanceSettings?: PartialAdvanceSettings ) {
         /// this part sets up the settings of map renderer ///
-        let basic = basicSettings;
+        const basic = basicSettings;
 
         const paramAS = advanceSettings;
         const defaultAS = CreateDefaultMapRendererSettingsFromQuality( basic.quality );
@@ -37,11 +35,8 @@ export class MapRendererBuilder {
         if ( paramAS ) {
             mergedAS = MergeMapRendererSettings( mergedAS, paramAS );
         }
-        let calcAs;
         if ( basic.createSettings ) {
-            calcAs = basic.createSettings( basic.quality, mergedAS );
-        }
-        if ( calcAs ) {
+            const calcAs = basic.createSettings( basic.quality, mergedAS );
             mergedAS = MergeMapRendererSettings( mergedAS, calcAs );
         }
 
